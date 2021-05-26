@@ -1,0 +1,1259 @@
+
+20-05-2021
+
+12:30 Entered Duckietown
+
+# working on new pi
+
+13:00 Ubuntu Login
+14:00 connected to Wifi. 
+	$ sudo nano /etc/netplan/50-cloud-init.yaml
+	$ sudo netplan generate
+	$ sudo netplan apply
+14:10 performed system upgrade
+	$ sudo dpkg-reconfigure -plow unattended-upgrades
+	$ sudo dpkg --configure -a
+	$ sudo apt update && sudo apt -f install && sudo apt full-upgrade
+	$ sudo dpkg-reconfigure -plow unattended-upgrades
+14:30 DVL 
+	$ pip install crcmod pyserial
+	$ git clone https://github.com/waterlinked/dvl-python.git
+	$ cd /home/ubuntu/dvl-python %%%folder with the setup.py file%%%
+	$ pip install -e .
+	$ python3
+		>>>  from wldvl import WlDVL
+		>>>  dvl = WlDVL("/dev/ttyUSB0")
+		>>>  dvl.read()
+15:00 begin installing ROS noetic-desktop. 
+	$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+	$ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+	$ sudo apt update
+	$ sudo apt install ros-noetic-desktop
+15:20 ROS environment setup
+	$ source /opt/ros/noetic/setup.bash
+	$ echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+	$ source ~/.bashrc
+15:30 Dependencies for building packages
+	$ sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+	$ sudo apt install python3-rosdep
+	$ sudo rosdep init
+	$ rosdep update
+15:40 successfully installed ROS noetic-desktop. After install:
+	$ df-h
+		Filesystem      Size  Used Avail Use% Mounted on
+		udev            406M     0  406M   0% /dev
+		tmpfs            91M  4.0M   87M   5% /run
+		/dev/mmcblk0p2  117G  5.2G  108G   5% /
+		tmpfs           455M     0  455M   0% /dev/shm
+		tmpfs           5.0M     0  5.0M   0% /run/lock
+		tmpfs           455M     0  455M   0% /sys/fs/cgroup
+		/dev/loop0       49M   49M     0 100% /snap/core18/2002
+		/dev/loop1       49M   49M     0 100% /snap/core18/2068
+		/dev/loop2       62M   62M     0 100% /snap/lxd/19040
+		/dev/loop3       29M   29M     0 100% /snap/snapd/11584
+		/dev/loop4       28M   28M     0 100% /snap/snapd/11843
+		/dev/loop5       60M   60M     0 100% /snap/lxd/20330
+		/dev/mmcblk0p1  253M  120M  133M  48% /boot/firmware
+		tmpfs            91M     0   91M   0% /run/user/1000
+	$ printenv | grep ROS
+		ROS_VERSION=1
+		ROS_PYTHON_VERSION=3
+		ROS_PACKAGE_PATH=/opt/ros/noetic/share
+		ROSLISP_PACKAGE_DIRECTORIES=
+		ROS_ETC_DIR=/opt/ros/noetic/etc/ros
+		ROS_MASTER_URI=http://localhost:11311
+		ROS_ROOT=/opt/ros/noetic/share/ros
+		ROS_DISTRO=noetic
+15:50 create ROS workspace	
+	$ mkdir -p ~/catkin_ws/src
+	$ cd ~/catkin_ws/
+	$ catkin_make
+	$ source devel/setup.bash
+	$ echo $ROS_PACKAGE_PATH
+		/home/ubuntu/catkin_ws/src:/opt/ros/noetic/share
+15:52 dvl ROS
+	$ cd ~/catkin_ws/src
+	$ git clone -b master https://github.com/waterlinked/dvl-a50-ros-driver.git
+	$ cd ~/catkin_ws
+	$ catkin_make
+16:06 creating a symlink to python 3
+	$ sudo ln -s /usr/bin/python3 /usr/bin/python
+	$ sudo shutdown now
+
+# working on companion pi
+
+16:20 turned on ROV for system work, switched to my computer.
+	performed update on web. 
+		original version: 0.0.24-14-gd62f472 
+		updated version: 0.0.26 
+	re-do dvl integration at http://192.168.2.2:2770/git
+16:35 ssh into pi
+17:00 dvl is not working. trouble shooting.
+17:15 solved. dvl power cable is loose! reconnecting.
+18:00 re-installing ros-kinetic (ros-comm, as ROS wiki recommended here https://wiki.ros.org/ROSberryPi/Installing%20ROS%20Kinetic%20on%20the%20Raspberry%20Pi) on system.
+	$ rosversion -d
+		kinetic
+	$ cat /etc/os-release
+		PRETTY_NAME="Raspbian GNU/Linux 8 (jessie)"
+		NAME="Raspbian GNU/Linux"
+		VERSION_ID="8"
+		VERSION="8 (jessie)"
+		ID=raspbian
+		ID_LIKE=debian
+		HOME_URL="http://www.raspbian.org/"
+		SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
+		BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
+	$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+	$ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+	$ sudo apt-get update && sudo apt-get upgrade
+	$ sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
+	$ rosdep update
+	$ rosinstall_generator ros_comm --rosdistro kinetic --deps --wet-only --tar > kinetic-ros_comm-wet.rosinstall
+	$ wstool init src kinetic-ros_comm-wet.rosinstall
+18:30 resolving unavailable dependencies	
+	$ mkdir -p ~/ros_catkin_ws/external_src
+	$ cd ~/ros_catkin_ws/external_src
+	$ wget http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download -O assimp-3.1.1_no_test_models.zip
+	$ unzip assimp-3.1.1_no_test_models.zip
+	$ cd assimp-3.1.1
+	$ cmake .
+	$ make
+	$ sudo make install
+	$ cd ~/ros_catkin_ws
+	$ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+	$ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+
+20:00 finished installation
+	$ mv -i kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
+	$ rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --tar > kinetic-desktop-full-wet.rosinstall
+	$ diff -u kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
+	$ wstool merge -t src kinetic-desktop-full-wet.rosinstall
+	$ wstool update -t src
+	$ ./src/catkin/bin/catkin_make_isolated --install
+	$ source ~/catkin_ws/devel/setup.bash
+	$ cd ~/catkin_ws
+	$ rosinstall_generator ros_comm ros_control joystick_drivers --rosdistro kinetic --deps --wet-only --tar > kinetic-custom_ros.rosinstall
+	$ wstool merge -t src kinetic-custom_ros.rosinstall
+	$ wstool update -t src
+	$ rosdep update
+	$ cd /catkin_ws && catkin_make
+#	encountered problem with catkin_make: missing package
+		CMake Warning at /opt/ros/kinetic/share/catkin/cmake/catkinConfig.cmake:76 (find_package):
+		  Could not find a package configuration file provided by "geometry_msgs" with any of the following names:
+
+		    geometry_msgsConfig.cmake
+		    geometry_msgs-config.cmake
+
+		  Add the installation prefix of "geometry_msgs" to CMAKE_PREFIX_PATH or set "geometry_msgs_DIR" to a directory containing one of the above files.  If "geometry_msgs" provides a separate development package or SDK, be sure it has been installed.
+		Call Stack (most recent call first):
+		  bluerov/CMakeLists.txt:5 (find_package)
+
+		-- Could not find the required component 'geometry_msgs'. The following CMake error indicates that you either need to install the package with the same name or change your environment so that it can be found.
+		CMake Error at /opt/ros/kinetic/share/catkin/cmake/catkinConfig.cmake:83 (find_package):
+		  Could not find a package configuration file provided by "geometry_msgs"
+		  with any of the following names:
+
+		    geometry_msgsConfig.cmake
+		    geometry_msgs-config.cmake
+
+		  Add the installation prefix of "geometry_msgs" to CMAKE_PREFIX_PATH or set "geometry_msgs_DIR" to a directory containing one of the above files.  If "geometry_msgs" provides a separate development package or SDK, be sure it has been installed.
+		Call Stack (most recent call first):
+		  bluerov/CMakeLists.txt:5 (find_package)
+
+		-- Configuring incomplete, errors occurred!
+		See also "/home/pi/catkin_ws/build/CMakeFiles/CMakeOutput.log".
+		See also "/home/pi/catkin_ws/build/CMakeFiles/CMakeError.log".
+		Makefile:318: recipe for target 'cmake_check_build_system' failed
+		make: *** [cmake_check_build_system] Error 1
+		Invoking "make cmake_check_build_system" failed
+
+---END OF DAY 20210520---
+
+21-05-2021
+
+9:30 entered Duckietown
+
+# working on companion pi
+
+# backed up home dir following https://www.raspberrypi.org/documentation/linux/filesystem/backup.md
+
+10:00 try to install ROS kinetic-desktop-full. Reason for re-install: catkin_make bluerov package returns Cmake error, missing two packages: "geometry_msgsConfig.cmake" and "geometry_msgs-config.cmake" which are both included in the desktop_full install.
+	$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+	$ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+	$ sudo apt-get update && sudo apt-get upgrade
+	$ sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
+	$ rosdep update
+
+	cmake "-DCMAKE_CXX_FLAGS=- stdlib=libc++" /path/to/rtags
+	-- Performing Test HAVE_CXX_WNO_INCONSISTENT_MISSING_OVERRIDE - Failed
+	-- Performing Test HAVE_CXX_WNO_UNUSED_CONST_VARIABLE - Failed
+	-- Performing Test HAVE_CXX_WNO_SHORTEN_64_TO_32 - Failed
+	-- Performing Test HAVE_CXX_WNO_TAUTOLOGICAL_UNDEFINED_COMPARE - Failed
+	-- Performing Test HAVE_CXX_WNO_MISSING_PROTOTYPES - Failed
+16:00 uninstalled Python 3
+
+18:00 initiated: building catkin workspace (LONG PROCESS > 3h) ABORTED AT ERROR
+	$ cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+22:00 solving tf2 error (SOLVED) 
+		'''
+		<== Failed to process package 'tf2': 
+	  	Command '['/opt/ros/kinetic/env.sh', 'make', '-j4', '-l4']' returned non-zero exit status 2
+
+		Reproduce this error by running:
+		==> cd /home/pi/catkin_ws/build_isolated/tf2 && /opt/ros/kinetic/env.sh make -j4 -l4
+		'''
+	%%%seems to be another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError. Fixed with following command%%%
+		$ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
+			%%%original%%%
+				'''			
+				#include "tf2/buffer_core.h"
+				#include "tf2/time_cache.h"
+				#include "tf2/exceptions.h"
+				#include "tf2_msgs/TF2Error.h"
+
+				#include <assert.h>
+				#include <console_bridge/console.h>
+				#include "tf2/LinearMath/Transform.h"
+				#include <boost/foreach.hpp>
+
+				namespace tf2
+				{
+
+				...
+
+				rest of the code
+				'''
+			%%%updated%%%	
+				'''			
+				#include "tf2/buffer_core.h"
+				#include "tf2/time_cache.h"
+				#include "tf2/exceptions.h"
+				#include "tf2_msgs/TF2Error.h"
+
+				#include <assert.h>
+				#include <console_bridge/console.h>
+				#include "tf2/LinearMath/Transform.h"
+				#include <boost/foreach.hpp>
+
+				#ifndef logError // added by frank26080115
+				#define logError CONSOLE_BRIDGE_logError
+				#endif
+
+				#ifndef logWarn // added by frank26080115
+				#define logWarn CONSOLE_BRIDGE_logWarn
+				#endif
+
+				namespace tf2
+				{
+
+				...
+
+				rest of the code
+				'''
+22:10 reinitiated: building catkin workspace (ABORTED AT ERROR)
+	$ cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+
+# working on new pi
+13:00 setting commandline startup for new pi
+		$ GRUB_CMDLINE_LINUX_DEFAULT="text"
+		$ GRUB_TERMINAL=console
+	save changes, then run:
+		$ sudo update-grub
+		$ sudo systemctl enable multi-user.target --force
+		$ sudo systemctl set-default multi-user.target
+	To undo sudo systemctl set-default multi-user.target simply type:
+		$ sudo systemctl enable graphical.target --force
+		$ sudo systemctl set-default graphical.target 
+
+# Qground Control
+	
+	read later: troubleshooting relating to parameter setting https://discuss.bluerobotics.com/t/water-linked-dvl-a50-support/9123
+
+	change parameters/PID in QGroundControl:
+		original: 
+			AHRS_EKF_TYPE 3
+			EK2_ENABLE 0
+			EK3_ENABLE 1
+			VISO_TYPE 1
+			EK3_GPS_TYPE 31
+			PSC_POSXY_P 1.0
+			PSC_POSZ_P 3.0
+			PSC_VELXY_D 0.0
+			PSC_VELXY_I 0.5
+			PSC_VELXY_P 1.0
+			PSC_VELZ_P 8.0
+		new, per recommendations in the PR for creating the DVL service https://www.ardusub.com/developers/dvl-integration.html: 
+			AHRS_EKF_TYPE 3
+			EK2_ENABLE 0
+			EK3_ENABLE 1
+			VISO_TYPE 1
+			EK3_GPS_TYPE 3
+			PSC_POSXY_P 2.5 %%%ERROR! QGC shows max 2.0?? force changed%%%
+			PSC_POSZ_P 1.0
+			PSC_VELXY_D 0.8
+			PSC_VELXY_I 0.5
+			PSC_VELXY_P 5.0
+			PSC_VELZ_P 5.0
+
+# The command history until 00:00 22 May 2021 is saved with the following command, at the external backup SD Card named backup_companion: 
+	$ cd /backup_companion
+	$ history > history_for_print.txt
+	
+---END OF DAY 20210521---
+
+NEXT: 
+0. continue installation
+1. take rov to OceanLab for testing position keeping & DVL data output for Nav
+2. try to connect two pi. Problem: how to power the second pi? 
+
+#	read later: 
+	https://wiki.ros.org/ROS/Tutorials/MultipleMachines
+	https://www.raspberrypi.org/forums/viewtopic.php?t=202489
+
+#	Communication between two pi: 
+	maybe connect with LAN and use TCP sockets to send and receive messages? A solution: First ping to second pi from first pi. Then use the other Pi's GPIO open a connection in the script on first Pi with
+		$ remote_pi = pigpio.pi("192.168.1.2")
+	and then use remote_pi to reference the others GPIO, e.g. 
+		$ remote_pi.read(4)
+		or
+		$ remote_pi.set_PWM_dutycycle(4, 64)
+		etc.
+	Other options are:
+    	Python socket examples
+    	MQTT examples
+    	Use pigpio Python module http://abyz.me.uk/rpi/pigpio/python.html
+
+	Easiest solution: get everything to work on the first pi.
+	However, a reason for additional pi: Externalize heavy computation.
+	"you would probably have 2 planners: one local real-time planner, doing basic stuff like react to unexpected obstacles and avoid crashing into things. The other planner (let’s call it the global planner) would do some more heavy computation, and provide a complete path to follow every 5 seconds, depending on all the possible variables that are available from all sensors in the environment. 
+	As you can guess, the real-time planner needs less computation power, but a really high frequency loop execution. So, keeping it on the Raspberry Pi is certainly the best choice to make here. 
+	As for the global planner, you don’t need a high execution frequency (one execution every few seconds), but you need some heavy computations to be made, which is not something your Raspberry Pi can handle easily.
+	In this scenario, you could externalize the global planner to a standard computer/laptop, which is working remotely from the robot. Every 5 seconds, the fast computer will compute the new updated path and send it to the Raspberry Pi, which will try to follow it, and react accordingly to obstacles with the real-time planner.
+	There is a simple way to do that: you can use the multi-machine functionality from ROS. Basically you’d launch a ROS master in one of the two machines, and then connect the machines together, so they can exchange data through topics, services, actions, etc.
+	To go further, let’s imagine you now have a robot fleet, with 10 robots powered by Raspberry Pi, plus one central computer. The latter will be used to monitor all robots, and create a path for each one so they do not collide with the environment and other robots.
+	You’d create a multi-machine environment, where each robot follows the order from the “master” computer. Each robot would just run the necessary code to interact with hardware, and let the master computer do the heavy work."
+
+20210522
+
+12:30 entered Duckietown
+13:00 powered on
+	// install missing package from source
+	$ cd ~/catkin_ws/src
+	$ git clone https://github.com/ros-geographic-info/geographic_info.git
+	$ cd ~/catkin_ws
+	$ rosdep install --from-paths src/ --ignore-src --rosdistro kinetic
+		// however encountered error: 
+		ERROR: the following packages/stacks could not have their rosdep keys resolved to system dependencies:
+		bluerov_apps: Cannot locate rosdep definition for [pcl_ros]
+		geographic_msgs: Cannot locate rosdep definition for [uuid_msgs]
+		mavros: Cannot locate rosdep definition for [tf2_eigen]
+		mavros_extras: Cannot locate rosdep definition for [tf2_eigen]
+		test_mavros: Cannot locate rosdep definition for [control_toolbox]
+		geodesy: Cannot locate rosdep definition for [uuid_msgs]
+	$ catkin_make
+
+
+18:50 Installing Python 3.6 on Raspbian, following this guide https://gist.github.com/dschep/24aa61672a2092246eaca2824400d37f
+	$ sudo apt-get update
+	$ sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
+	$ wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz
+	$ tar xf Python-3.6.5.tar.xz
+	$ cd Python-3.6.5
+	$ ./configure
+	$ make -j 4
+		%%%takes about 15 minutes (it produces 8 warnings to the stderr)%%%
+	$ sudo make altinstall
+		%%%takes about 2 minutes%%%
+	$ wget https://bootstrap.pypa.io/get-pip.py
+	$ python3.6 ./get-pip.py
+	$ export $PATH
+	$ export PATH=$PATH:/home/pi:/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
+
+
+25-05-2021
+
+12:00 entered Duckietown, found battery charger on & hot, shows "High Voltage" when plugging in both ROV batteries. 
+
+Check system requirements, per https://www.ros.org/reps/rep-0003.html#kinetic-kame-may-2016-may-2021 : 
+	Kinetic Kame (May 2016 - May 2021)
+	Required Support for:
+	    Ubuntu Wily (15.10)
+	    Ubuntu Xenial (16.04)
+	Recommended Support for:
+	    Debian Jessie
+	    Fedora 23
+	    Fedora 24
+	Minimum Requirements:
+	    C++11
+	        GCC 4.9 on Linux, as it's the version that Debian Jessie ships with
+	    Python 2.7
+	        Python 3.4 not required, but testing against it is recommended
+	    Lisp SBCL 1.2.4
+	    CMake 3.0.2
+	        Debian Jessie ships with CMake 3.0.2
+	    Boost 1.55
+	        Debian Jessie ships with Boost 1.55
+	Exact or Series Requirements:
+	    Ogre3D 1.9.x
+	    Gazebo 7
+	    PCL 1.7.x
+	    OpenCV 3.x
+	    Qt 5.3.x
+	    PyQt5
+	Build System Support: 
+	    catkin:
+	        build from source
+	        release for binary packaging
+	        wiki documentation
+	        continuous integration
+	    rosbuild:
+	        build from source
+
+12:38 
+	$ cd catkin_ws
+	$ wstool merge kinetic-ros_comm-wet.rosinstall -t src
+	$ wstool update -j 4 -t src
+
+13:00 updated to include: 
+	$ sudo nano /etc/apt/sources.list.d/ros-latest.list
+
+		deb http://packages.ros.org/ros/debian jessie main non-free contrib
+		deb-src http://packages.ros.org/ros/debian jessie main non-free contrib
+
+		deb http://mirror.pregi.net/debian/ jessie main non-free contrib
+		deb-src http://mirror.pregi.net/debian/ jessie main non-free contrib
+
+		deb http://security.debian.org/ jessie/updates main contrib non-free
+		deb-src http://security.debian.org/ jessie/updates main contrib non-free
+
+
+deb http://packages.ros.org/ros/debian jessie main
+
+deb http://mirror.pregi.net/debian/ jessie main non-free contrib
+deb-src http://mirror.pregi.net/debian/ jessie main non-free contrib
+
+deb http://security.debian.org/ jessie/updates main contrib non-free
+deb-src http://security.debian.org/ jessie/updates main contrib non-free
+
+
+ROS delete package: 
+	sudo apt-get remove ros-$Distro-$package_name
+	For removing packages: Just delete them (and rebuild). They'll be gone.
+	For removing a workspace: Just delete it (there are no other traces).
+
+ERROR: 
+	IOError: [Errno 13] Permission denied: '/home/pi/ros_catkin_ws/build_isolated/.built_by'
+Reason: 
+	It's likely you ran catkin_make_isolated as root at some point (using sudo). Seeing as you now attempt to run it as a regular user, you get permission errors, as you are not allowed to access the files and/or directories owned by root.
+fixed issue: 
+	$ sudo chown $USER: -R /home/pi/ros_catkin_ws
+	which will make $USER the owner of all the files in the workspace again.
+
+To make sure your workspace is properly overlayed by the setup script, make sure ROS_PACKAGE_PATH environment variable includes the directory you're in:
+	$ source devel/setup.bash
+	$ echo $ROS_PACKAGE_PATH
+
+ROS Kinetic installation guide: 
+		$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+		$ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+		$ sudo apt-get update
+	NO LONGER WORK! NEED TO INSTALL FROM SOURCE.
+		$ sudo apt-get install ros-kinetic-desktop-full 
+		$ sudo rosdep init
+		$ rosdep update
+	Step 8: Setting up the ROS environment variables
+		$ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+		$ source ~/.bashrc
+	Step 9: Create and initialize the catkin workspace
+		$ mkdir -p ~/catkin_ws/src
+		$ cd catkin_ws/src
+		$ catkin_init_workspace
+		$ cd ~/catkin_ws/
+		$ catkin_make
+	Step 10: Add the catkin_workspace to your ROS environment
+		$ source ~/catkin_ws/devel/setup.bash
+		$ echo “source ~/catkin_workspace/devel/setup.bash” >> ~/.bashrc
+	Step 11: Check the ROS environment variables
+		$ export | grep ROS
+	Step 12: Check ROS installation
+		$ roscore
+		$ rosrun turtlesim turtlesim_node
+
+BlueROV Simulation
+	https://gist.github.com/monabf/bc04b7ab366f812c645bf0aa6f22c8de
+	https://risc.readthedocs.io/4-marine-2.html
+
+
+https://robots.ros.org/bluerov/
+
+14:30 rm -rf *isolated
+
+Instructions to install from source for ROS Kinetic on Debian Jessie:
+	$ mkdir -p ~/ros_catkin_ws/external_src
+	$ cd ~/ros_catkin_ws/external_src
+	$ wget http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download -O assimp-3.1.1_no_test_models.zip
+	$ unzip assimp-3.1.1_no_test_models.zip
+	$ cd assimp-3.1.1
+	$ cmake .
+	$ make -j2
+	$ sudo make install -j2
+
+How to install ROS Package from git: 
+	cd ~/catkin_ws/src
+	git clone -b <branch> <address>
+	cd ~/catkin_ws 
+	catkin_make
+
+Resolve Dependency: 
+	$ cd ~/catkin_ws
+	$ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+
+Build Catkin Workspace:
+	$ cd ~/catkin_ws
+	$ catkin build --dry-run    # Show the package build order
+	$ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2
+	$ source /opt/ros/kinetic/setup.bash
+	$ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+
+When building speficic packages:
+	$ cd /catkin_ws
+	$ catkin build dvl-a50-ros-driver		# Build dvl-a50-ros-driver and its dependencies
+
+Repair:
+	$ apt-get install -f
+	$ sudo apt-get -f install
+Maintenance
+	$ sudo apt-get update && sudo apt-get upgrade
+	$ sudo apt-get clean && sudo apt-get autoclean && sudo apt-get autoremove
+
+Workspace Maintenance:
+	$ catkin clean --orphans				# Cleaning Products from Missing Packages
+
+# TASKS
+FIRST: install ROS workspace
+SECOND: install DVL to output ROS message https://github.com/waterlinked/dv-a50-ros-driver
+
+# run ros: 
+changed first line of publisher.py to .../python2
+
+22:28 traversing 211 packages in topological order
+	~~  - catkin
+	~~  - genmsg
+	~~  - gencpp
+	~~  - geneus
+	~~  - genlisp
+	~~  - gennodejs
+	~~  - genpy
+	~~  - bond_core
+	~~  - cmake_modules
+	~~  - class_loader
+	~~  - common_msgs
+	~~  - common_tutorials
+	~~  - cpp_common
+	~~  - desktop
+	~~  - diagnostics
+	~~  - eigen_stl_containers
+	~~  - executive_smach
+	~~  - geographic_info
+	~~  - geometry
+	~~  - geometry_tutorials
+	~~  - gl_dependency
+	~~  - joystick_drivers
+	~~  - mavlink (plain cmake)
+	~~  - media_export
+	~~  - message_generation
+	~~  - message_runtime
+	~~  - mk
+	~~  - nodelet_core
+	~~  - octomap (plain cmake)
+	~~  - opencv3 (plain cmake)
+	~~  - orocos_kdl (plain cmake)
+	~~  - python_orocos_kdl (plain cmake)
+	~~  - qt_dotgraph
+	~~  - qt_gui
+	~~  - qt_gui_py_common
+	~~  - qwt_dependency
+	~~  - random_numbers
+	~~  - robot
+	~~  - robot_model
+	~~  - ros
+	~~  - ros_base
+	~~  - ros_comm
+	~~  - ros_core
+	~~  - ros_environment
+	~~  - ros_tutorials
+	~~  - rosbag_migration_rule
+	~~  - rosbash
+	~~  - rosboost_cfg
+	~~  - rosbuild
+	~~  - rosclean
+	~~  - roscpp_core
+	~~  - roscpp_traits
+	~~  - roscreate
+	~~  - rosgraph
+	~~  - roslang
+	~~  - roslint
+	~~  - roslisp
+	~~  - rosmake
+	~~  - rosmaster
+	~~  - rospack
+	~~  - roslib
+	~~  - rosparam
+	~~  - rospy
+	~~  - rosservice
+	~~  - rostime
+	~~  - roscpp_serialization
+	~~  - python_qt_binding
+	~~  - roslaunch
+	~~  - rosunit
+	~~  - angles
+	~~  - libmavconn
+	~~  - rosconsole
+	~~  - pluginlib
+	~~  - qt_gui_cpp
+	~~  - resource_retriever
+	~~  - rosconsole_bridge
+	~~  - roslz4
+	~~  - rosbag_storage
+	~~  - rostest
+	~~  - rqt_action
+	~~  - rqt_bag
+	~~  - rqt_bag_plugins
+	~~  - rqt_common_plugins
+	~~  - rqt_console
+	~~  - rqt_dep
+	~~  - rqt_graph
+	~~  - rqt_gui
+	~~  - rqt_logger_level
+	~~  - rqt_moveit
+	~~  - rqt_msg
+	~~  - rqt_nav_view
+	~~  - rqt_plot
+	~~  - rqt_pose_view
+	~~  - rqt_publisher
+	~~  - rqt_py_console
+	~~  - rqt_robot_dashboard
+	~~  - rqt_robot_monitor
+	~~  - rqt_robot_plugins
+	~~  - rqt_robot_steering
+	~~  - rqt_runtime_monitor
+	~~  - rqt_service_caller
+	~~  - rqt_shell
+	~~  - rqt_srv
+	~~  - rqt_tf_tree
+	~~  - rqt_top
+	~~  - rqt_topic
+	~~  - rqt_web
+	~~  - smach
+	~~  - smclib
+	~~  - std_msgs
+	~~  - actionlib_msgs
+	~~  - bond
+	~~  - diagnostic_msgs
+	~~  - geometry_msgs
+	~~  - eigen_conversions
+	~~  - kdl_conversions
+	~~  - nav_msgs
+	~~  - rosgraph_msgs
+	~~  - rosmsg
+	~~  - rqt_py_common
+	~~  - shape_msgs
+	~~  - smach_msgs
+	~~  - std_srvs
+	~~  - tf2_msgs
+	~~  - tf2
+	~~  - trajectory_msgs
+	~~  - control_msgs
+	~~  - unique_identifier
+	~~  - urdf_parser_plugin
+	~~  - uuid_msgs
+	~~  - geographic_msgs
+	~~  - visualization_msgs
+	~~  - geometric_shapes
+	~~  - visualization_tutorials
+	~~  - viz
+	~~  - webkit_dependency
+	~~  - xmlrpcpp
+	~~  - roscpp
+	~~  - bondcpp
+	~~  - bondpy
+	~~  - nodelet
+	~~  - nodelet_tutorial_math
+	~~  - pluginlib_tutorials
+	~~  - roscpp_tutorials
+	~~  - rosout
+	~~  - diagnostic_aggregator
+	~~  - diagnostic_updater
+	~~  - diagnostic_common_diagnostics
+	~~  - dynamic_reconfigure
+	~~  - filters
+	~~  - joint_state_publisher
+	~~  - message_filters
+	~~  - rosnode
+	~~  - rospy_tutorials
+	~~  - rostopic
+	~~  - roswtf
+	~~  - rqt_gui_cpp
+	~~  - rqt_gui_py
+	~~  - rqt_reconfigure
+	~~  - self_test
+	~~  - smach_ros
+	~~  - tf2_py
+	~~  - topic_tools
+	~~  - rosbag
+	~~  - actionlib
+	~~  - actionlib_tutorials
+	~~  - diagnostic_analysis
+	~~  - nodelet_topic_tools
+	~~  - rqt_launch
+	~~  - sensor_msgs
+	~~  - cv_bridge
+	~~  - image_transport
+	~~  - joy
+	~~  - map_msgs
+	~~  - mavros_msgs
+	~~  - pcl_msgs
+	~~  - ps3joy
+	~~  - rqt_image_view
+	~~  - spacenav_node
+	~~  - stereo_msgs
+	~~  - tf2_ros
+	~~  - mavros
+	~~  - tf
+	~~  - interactive_markers
+	~~  - interactive_marker_tutorials
+	~~  - tf2_geometry_msgs
+	~~  - laser_geometry
+	~~  - tf2_kdl
+	~~  - tf_conversions
+	~~  - turtlesim
+	~~  - turtle_actionlib
+	~~  - turtle_tf
+	~~  - turtle_tf2
+	~~  - unique_id
+	~~  - geodesy
+	~~  - urdf
+	~~  - collada_parser
+	~~  - collada_urdf
+	~~  - kdl_parser
+	~~  - mavros_extras
+	~~  - robot_state_publisher
+	~~  - rviz
+	~~  - librviz_tutorial
+	~~  - rqt_rviz
+	~~  - rviz_plugin_tutorials
+	~~  - rviz_python_tutorial
+	~~  - test_mavros
+	~~  - visualization_marker_tutorials
+	~~  - waterlinked_a50_ros_driver
+	~~  - wiimote
+	~~  - xacro
+
+22:30 re-installing ros-kinetics_comms-wet
+	$ mv ~/catkin_ws ~/ros_catkin_ws
+	$ rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
+	$ ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release
+	$ source ~/ros_catkin_ws/install_isolated/setup.bash
+
+# Blue ROV ROS Packages
+# install ROS kinetic dependencies
+sudo apt-get install -y ros-kinetic-image-common ros-kinetic-robot-state-publisher ros-kinetic-joint-state-publisher ros-kinetic-image-transport-plugins ros-kinetic-mavros ros-kinetic-mavros-msgs ros-kinetic-mavros-extras ros-kinetic-joy
+	E: Unable to locate package ros-kinetic-image-common
+	E: Unable to locate package ros-kinetic-robot-state-publisher
+	E: Unable to locate package ros-kinetic-joint-state-publisher
+	E: Unable to locate package ros-kinetic-image-transport-plugins
+	E: Unable to locate package ros-kinetic-mavros
+	E: Unable to locate package ros-kinetic-mavros-msgs
+	E: Unable to locate package ros-kinetic-mavros-extras
+	E: Unable to locate package ros-kinetic-joy
+# install from source because above commands don't work anymore (Tutorial on installing ROS packages from source http://wiki.ros.org/qb_hand/Tutorials/ROS%20Packages%20Installation)
+	$ sudo gpasswd -a pi dialout
+	$ cd ~/catkin_ws/src
+	$ wstool init
+	$ git clone --branch hydro-devel https://github.com/ros-perception/image_common.git
+	$ git clone --branch indigo-devel https://github.com/ros-perception/image_transport_plugins.git
+	$ git clone --branch indigo-devel https://github.com/ros-drivers/joystick_drivers.git
+	$ git clone --branch kinetic-devel https://github.com/ros/robot_state_publisher.git
+	$ git clone --branch kinetic-devel https://github.com/ros/joint_state_publisher.git
+	$ git clone --branch master https://github.com/mavlink/mavros.git
+Also, ros-kinetic-ros-controllers, ros-kinetic-transmission-interface, ros-kinetic-joint-limits-interface, ros-kinetic-combined-robot-hw
+	NOT WORKING! Each of the packages prevents catkin_make from finishing and returns various errors.
+# install ros_control
+	$ wstool merge https://raw.github.com/ros-controls/ros_control/kinetic-devel/ros_control.rosinstall
+	$ wstool update
+	$ cd ..
+	$ rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+	$ catkin_make
+# build single ROS package using catkin_make
+	$ catkin_make --only-pkg-with-deps <target_package>
+# Don't forget to switch back to building all packages when you are done
+	$ catkin_make -DCATKIN_WHITELIST_PACKAGES=""
+# clone BlueROV packages
+	$ mkdir ~/repos
+	$ git clone https://github.com/bluerobotics/bluerov-ros-pkg.git ~/repos/bluerov-ros-pkg
+	$ ln -s ~/repos/bluerov-ros-pkg/bluerov ~/catkin_ws/src/bluerov
+	$ ln -s ~/repos/bluerov-ros-pkg/bluerov_apps ~/catkin_ws/src/bluerov_apps
+# udev rules
+	$ sudo cp ~/catkin_ws/src/bluerov/debian/99-bluerov.rules /etc/udev/rules.d/
+	$ sudo cp ~/catkin_ws/src/bluerov_apps/debian/99-bluerov-apps.rules /etc/udev/rules.d/
+	$ sudo udevadm control --reload-rules && sudo service udev restart && sudo udevadm trigger
+# build
+	$ cd ~/catkin_ws
+	$ source devel/setup.bash
+	$ echo $ROS_PACKAGE_PATH
+	$ catkin_make
+
+# INSTALLING DVL_ROS_DRIVER
+	$ cd ~/catkin_ws/src
+	$ git clone -b master https://github.com/waterlinked/dvl-a50-ros-driver.git
+	$ cd ~/catkin_ws
+	$ catkin_make
+
+# installing DVL python
+	$ pip install crcmod pyserial
+	$ cd /home/pi/
+	$ git clone https://github.com/waterlinked/dvl-python.git
+	$ cd ~/dvl-python
+	$ pip install -e .
+	$ python
+		>>>  from wldvl import WlDVL
+		>>>  dvl = WlDVL("/dev/ttyUSB0")
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!
+		>>>  dvl.read()
+			{'fom': 0.002, 'time': 40.57, 'vy': 0.004, 'vz': -0.002, 'vx': -0.003, 'valid': True, 'altitude': 0.14}
+
+# freeing up space on companion pi by deleting legacy ROS workspace (backed up)
+	$ rm -rf ros_catkin_ws
+
+# Also, about which build/make tool is the best (https://answers.ros.org/question/320613/catkin_make-vs-catkin_make_isolated-which-is-preferred/)
+    catkin_make was the first script around to build catkin workspace and is therefore used in many tutorials. It has several down sides (requiring non-standard logic in packages to declared cross-package target dependencies) and limitation (can't process plain CMake packages, requires all targets across all packages in a workspace to be unique). Therefore I wouldn't recommend to use it.
+    catkin_make_isolated is the script which was developed next which addresses all these shortcomings. It comes at the cost of being slower since it processes all packages sequentially. It is being used on build.ros.org in the devel and PR jobs. I would recommend using this if you want the most reliable solution (exclusively for ROS 1).
+    catkin_tools (called catkin build above) is similar to catkin_make_isolated but addresses the performance limitation by processing packages in parallel where possible. It also has a lot of usability features which makes it much easier to use and configure. On the downside this tool is not being actively maintained for the past years so I wouldn't recommend it either.
+    colcon is the new build tool developed for ROS 2 and works similar to catkin_tools with less usability features at the moment but being able to build any kind of packages (catkin, ament, CMake, Python setuptools, gradle, bazel, cargo, ...) on all major platforms (Linux, macOS, Windows). While developed for ROS 2 it in principle also works for ROS 1. If you are willing to use something more bleeding edge (which might come with quirks which haven't been resolved / polished yet) this might be an option. The big advantage is that the tool is very modular and actively developed and extended by multiple parties.
+	Good tool: https://catkin-tools.readthedocs.io/en/latest.html
+
+# The command history until 02:00 26 May 2021 is saved with the following command, at the external backup SD Card named backup_companion: 
+	$ cd /backup_companion
+	$ sudo history > history_for_print.txt
+	
+---END OF DAY 20210525---
+
+26-05-2021
+
+# creating a backup
+	sudo rsync -av --delete /home/pi /backup_companion/home/pi
+# rosrun encountered error: WARNING: ROS_MASTER_URI [http://danter-eth:11311/] host is not set to this machine. solved with following command: 
+	$ export ROS_MASTER_URI=https://localhost:11311
+	$ catkin_make
+		errors encountered: missing package from ros_controls. Solved with following command.
+# weirdly, it prompts rosdep is not installed. re-installing.
+	sudo apt-get install python-rosdep
+# install package: ros_controls
+	wstool init
+	wstool merge https://raw.github.com/ros-controls/ros_control/kinetic-devel/ros_control.rosinstall
+	wstool update
+	cd ..
+	rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+	source ~/catkin_ws/devel/setup.bash
+	catkin_make --only-pkg-with-deps ros_control
+# install package: urdf
+	cd ~/catkin_ws/src
+	git clone -b kinetic-devel https://github.com/ros/urdf.git
+	wstool update
+	cd ~/catkin_ws
+	rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+	source ~/catkin_ws/devel/setup.bash
+	catkin_make --only-pkg-with-deps urdf
+# switch to build everything!
+	catkin_make -DCATKIN_WHITELIST_PACKAGES=""
+		returns errors.
+# install four_wheel_control_msgs 
+	cd ~/catkin_ws/src
+	git clone -b master https://github.com/ros-drivers/four_wheel_steering_msgs.git
+	wstool update -j4 -t src
+	wstool update
+	cd ~/catkin_ws
+	rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+	source ~/catkin_ws/devel/setup.bash
+	catkin_make --only-pkg-with-deps four_wheel_steering_msgs
+# install tf
+	cd ~/catkin_ws/src
+	git clone -b indigo-devel https://github.com/ros/geometry.git
+	wstool update -j4 -t src
+	wstool update
+	cd ~/catkin_ws
+	rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+	source ~/catkin_ws/devel/setup.bash
+	catkin_make --only-pkg-with-deps geometry
+# install tf returns error: tf2_rosConfig.cmake tf2_ros-config.cmake NOT FOUND. Solved with: 
+	cd ~/catkin_ws
+	rosdep install --from-paths ./src --ignore-src --rosdistro kinetic
+		ERROR: the following packages/stacks could not have their rosdep keys resolved to system dependencies:
+		bluerov_apps: Cannot locate rosdep definition for [pcl_ros]
+		gripper_action_controller: Cannot locate rosdep definition for [xacro]
+		diff_drive_controller: Cannot locate rosdep definition for [xacro]
+		mavros: Cannot locate rosdep definition for [geographic_msgs]
+		ackermann_steering_controller: Cannot locate rosdep definition for [xacro]
+		mavros_msgs: Cannot locate rosdep definition for [geographic_msgs]
+		mavros_extras: Cannot locate rosdep definition for [tf2_eigen]
+		test_mavros: Cannot locate rosdep definition for [tf2_ros]
+		tf: Cannot locate rosdep definition for [tf2_ros]
+		joint_trajectory_controller: Cannot locate rosdep definition for [xacro]
+		robot_state_publisher: Cannot locate rosdep definition for [tf2_kdl]
+		four_wheel_steering_controller: Cannot locate rosdep definition for [urdf_geometry_parser]
+	source /opt/ros/kinetic/setup.bash
+# to solve the above ERROR: 
+	cd ~/catkin_ws/src
+	git clone -b kinetic-devel https://github.com/ros-perception/perception_pcl.git 
+	git clone -b kinetic-devel https://github.com/ros/xacro.git
+	git clone -b master https://github.com/ros-geographic-info/geographic_info.git
+	git clone -b indigo-devel https://github.com/ros/geometry2.git
+	git clone -b kinetic-devel https://github.com/ros-controls/urdf_geometry_parser.git
+	git clone -b master https://github.com/ros-geographic-info/unique_identifier.git
+	git clone -b kinetic-devel https://github.com/ros-simulation/gazebo_ros_pkgs.git
+	git clone -b kinetic-devel https://github.com/ros/metapackages.git
+	cd ~/catkin_ws
+	wstool update -j4 -t src
+	wstool update
+	rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+	rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+		ERROR (non-fatal): 
+			"sudo -H apt-get install -y libgazebo7-dev" failed with missing dependencies: libgazebo7-dev : 
+			Depends: libtbb-dev but it is not installable
+	        Depends: libsimbody-dev but it is not going to be installed
+	        Depends: libgazebo7 (= 7.0.0+dfsg-2osrf1~jessie1) but it is not going to be installed
+	        Depends: gazebo7-plugin-base (= 7.0.0+dfsg-2osrf1~jessie1) but it is not going to be installed
+        SOLVED WITH FOLLOWING (Uses Aplitude which offers you a solution to your dependencies): 
+        	$ sudo aptitude install gazebo7
+	source ~/catkin_ws/devel/setup.bash
+	catkin_make --only-pkg-with-deps perception-pcl
+	catkin_make --only-pkg-with-deps geometry2
+		returns errors "No package 'bullet' found". solved with following: 
+			sudo apt-get install libbullet-dev
+			catkin_make --only-pkg-with-deps tf2_bullet
+		returns errors with tf2 and "geometry2/tf2/CMakeFiles/tf2.dir/src/buffer_core.cpp.o". SOLVED WITH FOLLOWING (cite https://eleccelerator.com/wiki/index.php?title=Raspbian_Buster_ROS_RealSense#Problem:_logWarn_or_logError_not_declared_in_scope This is another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError):
+			sudo nano ~/catkin_ws/src/geometry2/tf2/src/buffer_core.cpp
+			'''
+			#include "tf2/buffer_core.h"
+			#include "tf2/time_cache.h"
+			#include "tf2/exceptions.h"
+			#include "tf2_msgs/TF2Error.h"
+
+			#include <assert.h>
+			#include <console_bridge/console.h>
+			#include "tf2/LinearMath/Transform.h"
+			#include <boost/foreach.hpp>
+
+			#ifndef logError // added by frank26080115
+			#define logError CONSOLE_BRIDGE_logError
+			#endif
+
+			#ifndef logWarn // added by frank26080115
+			#define logWarn CONSOLE_BRIDGE_logWarn
+			#endif
+
+
+			namespace tf2
+			{
+
+			...
+
+			rest of the code
+
+			'''
+
+	catkin_make --only-pkg-with-deps urdf_geometry_parser
+	catkin_make --only-pkg-with-deps geographic_info
+	catkin_make --only-pkg-with-deps xacron
+	catkin_make --only-pkg-with-deps unique_identifier
+	catkin_make --only-pkg-with-deps geodesy
+		ERROR: 
+		SOLVED WITH: 
+			cd ~/catkin_ws/src/perception_pcl
+			$ git clone -b indigo-devel https://github.com/ros-perception/pcl_conversions.git
+			git clone -b indigo-devel https://github.com/ros-perception/pcl_msgs.git
+			wstool update -j4 -t src
+			wstool update
+			cd ~/catkin_ws
+			rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+			rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+			source ~/catkin_ws/devel/setup.bash
+			catkin_make --only-pkg-with-deps pcl_conversions
+			catkin_make --only-pkg-with-deps pcl_msgs
+
+
+# Solving unavailable dependencies: Compilation of collada_urdf will fail per http://answers.ros.org/question/48084/urdf_to_collada-undefined-reference-to-vtable-for-assimpiosystem/
+	mkdir -p ~/catkin_ws/external_src
+	cd ~/catkin_ws/external_src
+	wget http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download -O assimp-3.1.1_no_test_models.zip
+	unzip assimp-3.1.1_no_test_models.zip
+	cd assimp-3.1.1
+	cmake .
+	make
+	sudo make install
+
+# Resolving Dependencies (maintenance, why not?)
+	$ cd ~/catkin_ws
+	$ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+		ERROR: the following packages/stacks could not have their rosdep keys resolved to system dependencies:
+		bluerov_apps: Cannot locate rosdep definition for [pcl_conversions]
+		geographic_msgs: Cannot locate rosdep definition for [uuid_msgs]
+		perception_pcl: Cannot locate rosdep definition for [pcl_msgs]
+		robot_state_publisher: Cannot locate rosdep definition for [kdl_parser]
+		ackermann_steering_controller: Cannot locate rosdep definition for [gazebo_ros]
+		geodesy: Cannot locate rosdep definition for [uuid_msgs]
+		pcl_ros: Cannot locate rosdep definition for [pcl_msgs]
+
+# set up tf
+	cd ~/catkin-ws/src
+	catkin_create_pkg robot_setup_tf roscpp tf geometry_msgs
+	catkin_make --only-pkg-with-deps four_wheel_steering_controller
+
+sudo apt-get install -y ros-kinetic-ros-control
+	ros-kinetic-ros-controllers 
+	ros-kinetic-gazebo-ros-pkgs 
+	ros-kinetic-gazebo-ros-control 
+	gazebo2 
+	libsdformat1 
+	ros-kinetic-gazebo-plugins 
+	ros-kinetic-gazebo-ros 
+	ros-kinetic-joystick-drivers
+rosdep install 
+	robot_state_publisher
+	urdf 
+	xacro 
+	controller_manager 
+	geometry_msgs 
+	joy 
+	ros_control 
+	ros_controllers 
+	sensor_msgs 
+	std_msgs 
+	gazebo_msgs 
+	gazebo_plugins 
+	gazebo_ros 
+	gazebo_ros_control 
+	joy
+
+
+# The command history until 23:00 26 May 2021 is saved with the following command, at the external backup SD Card named backup_companion: 
+	$ cd /backup_companion
+	$ sudo -i
+	$ history > history_for_print_20200526.txt
+	$ shutdown now
+
+---END OF DAY 20210526---
+
+TO DO 20210527:
+catkin_make no errors
+10:00 meet alex to assemble robot
+11:00 move robot to ocean lab for a swim. Take with: Robot, Joystick, Battery, Connection, GoPro, 
+
+_______________________________________________________________________________
+# Questions asked by Maurelli: 
+	- Explain how it works in terms of ROS topic, ros package.
+		A data publisher that starts as soon as it starts. To use it just subscribe to it. 
+	- range of the sensor? Is it configurable?
+	- you need to explain what work did you do
+
+# other things to mention
+as Peter mentioned in his presentation, waterlinked provided a package that turns json to ros message. 
+
+# working with DVL
+##	Operation within QGC:
+###		For Position Hold:
+			1. go to http://192.168.2.2:2770/waterlinked
+			2. the "Status" field in the Waterlinked page should read Running.... 
+			3. QGC will announce "EKF3 IMU0 STARTED RELATIVE AIDING" and then "EKF3 IMU0 FUSING ODOMETRY" (This means the DVL input is being fused.)
+			4. switch to POSHOLD mode
+###		For Deadreckoning (track ROV position in QGC map view): The DVL data is sent by the VISION_POSITION_DELTA mavlink message https://mavlink.io/en/messages/ardupilotmega.html#VISION_POSITION_DELTA
+			1. go to http://192.168.2.2:2770/waterlinked 
+			2. place the pin in the starting position
+			3. click "Set New Origin".
+##	ways to communicate with DVL and read data
+###		web interface
+			dvl web-GUI: http://192.168.2.95/#/
+			dvl setting: http://192.168.2.2:2770/waterlinked
+####			Driver Enable: 
+					Enables or disables the DVL Driver
+####			DVL IP Adress: 
+					Inital IP where the driver will try to find the DVL. The driver always attempts to find Waterlinked-dvl.local (mDNS hostname) in the local network, if that fails, it falls back to the IP address in this field.
+####			Orientation: 
+					Orientation of the DVL: Down is the suggested use, where the DVL points to the ocean floor, Forward is an untested mode where the dvl is mounted forward to lock position to a vertical surface in front of it.
+####			Use as Rangefinder:
+					Allows the DVL to be used as a rangefinder (shown in QGC).
+####			Restart DVL Service:
+					Restarts the DVL service.
+####			Set New Origin:
+					Used for dead reckoning; this makes the ROV show up in QGC at the selected location. The position displayed in QGC is calculated by the autopilot independently of the position showed in the Water Linked DVL web interface, which is calculated by the DVL itself.
+####			Status:
+					Shows the current Driver status, useful for troubleshooting.
+##		TCP (Transmission Control Protocol)
+			a TCP server is run on port 16171, sends velocity report from the DVL on JSON format
+###			Velocity report:
+				wrx,[time],[vx],[vy],[vz],[fom],[altitude],[valid],[status] 
+					time: Milliseconds since last velocity report (ms)
+					vx: Measured velocity in x direction (m/s)
+					vy: Measured velocity in y direction (m/s)
+					vz: Measured velocity in z direction (m/s)
+					fom: Figure of merit, a measure of the accuracy of the measured velocities (m/s)
+					altitude: (m)
+# how exactly is altitude measured?????					
+					valid: bottomlock and valid altitude and velocities (y/n)
+					status: 0 for normal operation, 1 for high temperature warning
+####			example valid velocity:
+					wrx,112.83,0.007,0.017,0.006,0.000,0.93,y,0*d2
+					wrx,140.43,0.008,0.021,0.012,0.000,0.92,y,0*b7
+					wrx,118.47,0.009,0.020,0.013,0.000,0.92,y,0*54
+####			example invalid velocity:
+					wrx,1075.51,0.000,0.000,0.000,2.707,-1.00,n,1*04
+					wrx,1249.29,0.000,0.000,0.000,2.707,-1.00,n,1*6a
+					wrx,1164.94,0.000,0.000,0.000,2.707,-1.00,n,1*39
+###			Transducer report: Measured distance to bottom from each transduser
+				wrt,[dist_1],[dist_2],[dist_3],[dist_4]
+####			example valid distance:
+					wrt,15.00,15.20,14.90,14.20*b1
+					wrt,14.90,15.10,14.80,14.10*ac
+####			example invalid distance:
+					wrt,14.90,15.10,14.80,-1.00*53
+					wrt,15.00,15.20,14.90,-1.00*71
+##	Data Output
+		code: ???
+			function: read dvl data, save as readable file
+				$ roscore
+			for server node: 
+				$ rosrun comm_tcp server_node 16171
+			for client node: 
+				$ rosrun comm_tcp client_node 192.168.2.95 16171
+		used MAC as a client (for now, to generate data string for nav team):
+			read data in terminal: 
+				$ nc 192.168.2.95 16171
+			read data and save to text file:
+				$ nc 192.168.2.95 16171 > out.txt
+# ways to read data from dvl: 
+##	commandline: 
+		read data in terminal: 
+			$ nc 192.168.2.95 16171
+		read data and save to text file:
+			$ nc 192.168.2.95 16171 > out.txt
+_______________________________________________________________________________
+# Status as of 26-05-2021 15:11
+	Current status of the companion pi: the currently installed version is ros-kinetic_comms-wet, a bare bone installation with basic communication functions. The active workspace is catkin_ws. catkin_make returns no error in its current state. A disk mirror of /home/pi has been made on 26-05-2021 15:11.
+	Also a note on installing packages, Debian Jessie is End-of-Life and build farm support has been turned off, so apt-get commands won't work on the companion pi and all ros packages need to be installed from source (awful lot of work). 
+	The currently installed 108 packages are: 
+		-- ~~  - genmsg
+		-- ~~  - gencpp
+		-- ~~  - geneus
+		-- ~~  - genlisp
+		-- ~~  - gennodejs
+		-- ~~  - genpy
+		-- ~~  - cmake_modules
+		-- ~~  - cpp_common
+		-- ~~  - image_common (metapackage)
+		-- ~~  - image_transport_plugins (metapackage)
+		-- ~~  - joint_state_publisher_gui
+		-- ~~  - joystick_drivers (metapackage)
+		-- ~~  - message_generation
+		-- ~~  - message_runtime
+		-- ~~  - mk
+		-- ~~  - ros (metapackage)
+		-- ~~  - ros_comm (metapackage)
+		-- ~~  - ros_control (metapackage)
+		-- ~~  - ros_controllers (metapackage)
+		-- ~~  - ros_environment
+		-- ~~  - rosbash
+		-- ~~  - rosboost_cfg
+		-- ~~  - rosbuild
+		-- ~~  - rosclean
+		-- ~~  - roscpp_traits
+		-- ~~  - roscreate
+		-- ~~  - rosgraph
+		-- ~~  - roslang
+		-- ~~  - roslisp
+		-- ~~  - rosmake
+		-- ~~  - rosmaster
+		-- ~~  - rospack
+		-- ~~  - roslib
+		-- ~~  - rosparam
+		-- ~~  - rospy
+		-- ~~  - rosservice
+		-- ~~  - rostime
+		-- ~~  - roscpp_serialization
+		-- ~~  - roslaunch
+		-- ~~  - rosunit
+		-- ~~  - libmavconn
+		-- ~~  - rosconsole
+		-- ~~  - roslz4
+		-- ~~  - rosbag_storage
+		-- ~~  - rostest
+		-- ~~  - rqt_controller_manager
+		-- ~~  - rqt_joint_trajectory_controller
+		-- ~~  - std_msgs
+		-- ~~  - controller_manager_msgs
+		-- ~~  - rosgraph_msgs
+		-- ~~  - rosmsg
+		-- ~~  - std_srvs
+		-- ~~  - control_msgs
+		-- ~~  - urdf_parser_plugin
+		-- ~~  - xmlrpcpp
+		-- ~~  - roscpp
+		-- ~~  - bluerov_auto
+		-- ~~  - realtime_tools
+		-- ~~  - rosout
+		-- ~~  - hardware_interface
+		-- ~~  - combined_robot_hw
+		-- ~~  - controller_interface
+		-- ~~  - controller_manager
+		-- ~~  - force_torque_sensor_controller
+		-- ~~  - forward_command_controller
+		-- ~~  - four_wheel_steering_controller
+		-- ~~  - joint_state_publisher
+		-- ~~  - message_filters
+		-- ~~  - position_controllers
+		-- ~~  - rosnode
+		-- ~~  - rostopic
+		-- ~~  - roswtf
+		-- ~~  - topic_tools
+		-- ~~  - rosbag
+		-- ~~  - control_toolbox
+		-- ~~  - controller_manager_tests
+		-- ~~  - combined_robot_hw_tests
+		-- ~~  - camera_calibration_parsers
+		-- ~~  - image_transport
+		-- ~~  - camera_info_manager
+		-- ~~  - compressed_depth_image_transport
+		-- ~~  - compressed_image_transport
+		-- ~~  - cv_camera
+		-- ~~  - imu_sensor_controller
+		-- ~~  - joint_state_controller
+		-- ~~  - joy
+		-- ~~  - bluerov_apps
+		-- ~~  - mavros_msgs
+		-- ~~  - mavros
+		-- ~~  - polled_camera
+		-- ~~  - ps3joy
+		-- ~~  - robot_state_publisher
+		-- ~~  - bluerov
+		-- ~~  - spacenav_node
+		-- ~~  - theora_image_transport
+		-- ~~  - transmission_interface
+		-- ~~  - urdf
+		-- ~~  - diff_drive_controller
+		-- ~~  - ackermann_steering_controller
+		-- ~~  - effort_controllers
+		-- ~~  - gripper_action_controller
+		-- ~~  - joint_limits_interface
+		-- ~~  - joint_trajectory_controller
+		-- ~~  - mavros_extras
+		-- ~~  - test_mavros
+		-- ~~  - velocity_controllers
+		-- ~~  - waterlinked_a50_ros_driver
+		-- ~~  - wiimote
+
+_______________________________________________________________________________
+# good resources for ROS kinetic
+	Industrial ROS Kinetic Trainer https://industrial-training-master.readthedocs.io/en/kinetic/
+
+# Good to know: How to NOT build package(s)
+	# "List of ';' separated packages to build"
+	$ catkin_make -DCATKIN_BLACKLIST_PACKAGES="foo;bar"
