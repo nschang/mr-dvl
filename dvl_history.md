@@ -20,7 +20,7 @@
 	$ git clone https://github.com/waterlinked/dvl-python.git
 	$ cd /home/ubuntu/dvl-python %%%folder with the setup.py file%%%
 	$ pip install -e .
-	$ python3
+	$ python
 		>>>  from wldvl import WlDVL
 		>>>  dvl = WlDVL("/dev/ttyUSB0")
 		>>>  dvl.read()
@@ -1049,8 +1049,79 @@ catkin_make no errors
 10:00 meet alex to assemble robot
 11:00 move robot to ocean lab for a swim. Take with: Robot, Joystick, Battery, Connection, GoPro, 
 
+27-05-2021 TESTING IN OCEAN LAB
+12:34 start output json file to out1.txt
+
+did not work out!
+
+Workflow of position hold test: 
+	1. go to http://192.168.2.2:2770/waterlinked
+	2. the "Status" field in the Waterlinked page should read Running.... 
+	3. QGC will announce "EKF3 IMU0 STARTED RELATIVE AIDING" and then "EKF3 IMU0 FUSING ODOMETRY" (This means the DVL input is being fused.)
+	4. switch to POSHOLD mode
+
+28-05-2021
+
+Problem: No video feed on mac QGC (downloaded from QGC website) SOLVED
+	Solved by replacing current version with the QGC provided by BlueRobotics https://docs.bluerobotics.com/downloads/#ardusub-firmware-files
+
+20:00 entered Ocean Lab for testing
+2.00 out of disk space! (13.95 out of 14) use ncdu to make room
+	sudo ncdu -rx / # check large files
+	lsblk
+	sudo mkdir /media/usb 
+	sudo mount /dev/sdb1 /media/usb # mount back up disk
+	sudo find /tmp -type f -atime +10 -delete # deletes tmp files older than 10 days
+	sudo rsync -av /backup_companion /media/usb
+	rm -rf /backup_companion # do this AFTER DOUBLE CHECK COPIED FILE
+	sudo umount /media/usb # don't forget to unmount
+
+goals:
+1. catkin_make successful build
+2. dvl ros successful run
+3. get dvl ros message
+4. interpret dvl ros message
+5. dvl position hold
+6. finish ppt script
+
+ERROR catkin_make returns errors: missing gazeboConfig.CMake
+solved!!!added repos: 
+	sudo nano /etc/apt/sources.list
+		'''
+		deb http://archive.debian.org/debian/ jessie main contrib non-free 
+		# deb-src http://archive.debian.org/debian/ jessie main
+		deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-f$
+		# Uncomment line below then 'apt-get update' to enable 'apt-get source'
+		# deb-src http://archive.raspbian.org/raspbian/ jessie main contrib non-fre$
+		deb http://security.debian.org/ jessie/updates main contrib non-free
+		# deb-src http://security.debian.org/ jessie/updates main contrib non-free
+		deb http://ftp.de.debian.org/debian/ jessie main contrib non-free
+		#deb-src http://ftp.de.debian.org/debian/ jessie main contrib non-free
+		'''
+	$ sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
+	sudo apt-get install libgazebo7-dev
+	sudo apt-get install ros-kinetic-gazebo7-ros-pkgs
+
+	catkin_make --only-pkg-with-deps waterlinked-a50-ros-driver
+
+
+rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95 _do_log_data:=true
+
+
+# solving NO_PUBKEY during apt-get update
+	gpg --recv-keys AA8E81B4331F7F50
+	gpg --export AA8E81B4331F7F50| apt-key add -
+
+wget http://mirrordirector.raspbian.org/raspbian/pool/main/h/hdf5/hdf5-helpers_1.8.13+docs-15+deb8u1_armhf.deb
+sudo dpkg -i hdf5-helpers_1.8.13+docs-15+deb8u1_armhf.deb
+sudo apt-get install libgazebo7-dev
+
+
+
+
 _______________________________________________________________________________
-# Questions asked by Maurelli: 
+
+# Questions asked by prof. Maurelli: 
 	- Explain how it works in terms of ROS topic, ros package.
 		A data publisher that starts as soon as it starts. To use it just subscribe to it. 
 	- range of the sensor? Is it configurable?
@@ -1118,7 +1189,8 @@ as Peter mentioned in his presentation, waterlinked provided a package that turn
 					wrt,14.90,15.10,14.80,-1.00*53
 					wrt,15.00,15.20,14.90,-1.00*71
 ##	Data Output
-		code: ???
+		ros message
+		code: 
 			function: read dvl data, save as readable file
 				$ roscore
 			for server node: 
@@ -1136,6 +1208,18 @@ as Peter mentioned in his presentation, waterlinked provided a package that turn
 			$ nc 192.168.2.95 16171
 		read data and save to text file:
 			$ nc 192.168.2.95 16171 > out.txt
+
+31-05-2021
+# Error: When catkin_make freezes the pi: 
+	Recover by: ctrl+c
+	Potential solution, try again using 
+		$ catkin_make -j1 #single-thread compilation
+		or
+		$ catkin_make -j2 #double-thread compilation
+		or 
+		$ catkin_make -j4 -l4 #quadruple-thread compilation
+
+
 _______________________________________________________________________________
 # Status as of 26-05-2021 15:11
 	Current status of the companion pi: the currently installed version is ros-kinetic_comms-wet, a bare bone installation with basic communication functions. The active workspace is catkin_ws. catkin_make returns no error in its current state. A disk mirror of /home/pi has been made on 26-05-2021 15:11.
