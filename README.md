@@ -14,7 +14,7 @@ DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic bea
 
 ## Status Check
 
-    ### LED Signals
+  ### LED Signals
 
 * No green light: Power is off.
 
