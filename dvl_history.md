@@ -1,20 +1,27 @@
-20-05-2021
+Command History - DVL
+
+# 20-05-2021
 
 12:30 Entered Duckietown
 
-# working on new pi
+## working on new pi
 
 13:00 Ubuntu Login
 14:00 connected to Wifi. 
+	```
 	$ sudo nano /etc/netplan/50-cloud-init.yaml
 	$ sudo netplan generate
 	$ sudo netplan apply
+	```
 14:10 performed system upgrade
+	```
 	$ sudo dpkg-reconfigure -plow unattended-upgrades
 	$ sudo dpkg --configure -a
 	$ sudo apt update && sudo apt -f install && sudo apt full-upgrade
 	$ sudo dpkg-reconfigure -plow unattended-upgrades
+	```
 14:30 DVL 
+	```
 	$ pip install crcmod pyserial
 	$ git clone https://github.com/waterlinked/dvl-python.git
 	$ cd /home/ubuntu/dvl-python %%%folder with the setup.py file%%%
@@ -23,21 +30,29 @@
 		>>>  from wldvl import WlDVL
 		>>>  dvl = WlDVL("/dev/ttyUSB0")
 		>>>  dvl.read()
+	```
 15:00 begin installing ROS noetic-desktop. 
+	```
 	$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 	$ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 	$ sudo apt update
 	$ sudo apt install ros-noetic-desktop
+	```
 15:20 ROS environment setup
+	```
 	$ source /opt/ros/noetic/setup.bash
 	$ echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 	$ source ~/.bashrc
+	```
 15:30 Dependencies for building packages
+	```
 	$ sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
 	$ sudo apt install python3-rosdep
 	$ sudo rosdep init
 	$ rosdep update
+	```
 15:40 successfully installed ROS noetic-desktop. After install:
+	```
 	$ df-h
 		Filesystem      Size  Used Avail Use% Mounted on
 		udev            406M     0  406M   0% /dev
@@ -63,33 +78,41 @@
 		ROS_MASTER_URI=http://localhost:11311
 		ROS_ROOT=/opt/ros/noetic/share/ros
 		ROS_DISTRO=noetic
+	```
 15:50 create ROS workspace	
+	```
 	$ mkdir -p ~/catkin_ws/src
 	$ cd ~/catkin_ws/
 	$ catkin_make
 	$ source devel/setup.bash
 	$ echo $ROS_PACKAGE_PATH
 		/home/ubuntu/catkin_ws/src:/opt/ros/noetic/share
+	```	
 15:52 dvl ROS
+	```
 	$ cd ~/catkin_ws/src
 	$ git clone -b master https://github.com/waterlinked/dvl-a50-ros-driver.git
 	$ cd ~/catkin_ws
 	$ catkin_make
+	```
 16:06 creating a symlink to python 3
+	```
 	$ sudo ln -s /usr/bin/python3 /usr/bin/python
 	$ sudo shutdown now
+	```
 
-# working on companion pi
+## working on companion pi
 
 16:20 turned on ROV for system work, switched to my computer.
 	performed update on web. 
 		original version: 0.0.24-14-gd62f472 
 		updated version: 0.0.26 
-	re-do dvl integration at http://192.168.2.2:2770/git
+	then re-do dvl integration at http://192.168.2.2:2770/git
 16:35 ssh into pi
 17:00 dvl is not working. trouble shooting.
 17:15 solved. dvl power cable is loose! reconnecting.
 18:00 re-installing ros-kinetic (ros-comm, as ROS wiki recommended here https://wiki.ros.org/ROSberryPi/Installing%20ROS%20Kinetic%20on%20the%20Raspberry%20Pi) on system.
+	```
 	$ rosversion -d
 		kinetic
 	$ cat /etc/os-release
@@ -109,7 +132,9 @@
 	$ rosdep update
 	$ rosinstall_generator ros_comm --rosdistro kinetic --deps --wet-only --tar > kinetic-ros_comm-wet.rosinstall
 	$ wstool init src kinetic-ros_comm-wet.rosinstall
+	```
 18:30 resolving unavailable dependencies	
+	```
 	$ mkdir -p ~/ros_catkin_ws/external_src
 	$ cd ~/ros_catkin_ws/external_src
 	$ wget http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download -O assimp-3.1.1_no_test_models.zip
@@ -121,8 +146,9 @@
 	$ cd ~/ros_catkin_ws
 	$ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
 	$ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
-
+	```
 20:00 finished installation
+	```
 	$ mv -i kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
 	$ rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --tar > kinetic-desktop-full-wet.rosinstall
 	$ diff -u kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
@@ -136,7 +162,8 @@
 	$ wstool update -t src
 	$ rosdep update
 	$ cd /catkin_ws && catkin_make
-#	encountered problem with catkin_make: missing package
+	```
+###	encountered problem with catkin_make: missing package
 		CMake Warning at /opt/ros/kinetic/share/catkin/cmake/catkinConfig.cmake:76 (find_package):
 		  Could not find a package configuration file provided by "geometry_msgs" with any of the following names:
 
@@ -168,13 +195,13 @@
 
 ---END OF DAY 20210520---
 
-21-05-2021
+# 21-05-2021
 
 9:30 entered Duckietown
 
-# working on companion pi
+## working on companion pi
 
-# backed up home dir following https://www.raspberrypi.org/documentation/linux/filesystem/backup.md
+### backed up home dir following https://www.raspberrypi.org/documentation/linux/filesystem/backup.md
 
 10:00 try to install ROS kinetic-desktop-full. Reason for re-install: catkin_make bluerov package returns Cmake error, missing two packages: "geometry_msgsConfig.cmake" and "geometry_msgs-config.cmake" which are both included in the desktop_full install.
 	$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
