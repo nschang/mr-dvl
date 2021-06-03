@@ -6,14 +6,9 @@ This is the repository of the DVL group for the course CA-RIS-801 Marine Robotic
 
 ## introduction
 
-DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic beams to measure distance to bottom surface and the velocity which the unit is moving across the surface.
+DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic beams to measure distance to bottom surface and the velocity which the unit is moving across the surface. The DVL estimates velocity relative to the sea bottom by sending acoustic waves from the four angled transducers and then measure the frequency shift (doppler effect) from the received echo. By combining the measurements of all four transducers and the time between each acoustic pulse, it is able to accurately estimate the speed and direction of the movement of vehicle.
 
-The DVL estimates velocity relative to the sea bottom by sending acoustic waves from the four angled transducers and then measure the frequency shift (doppler effect) from the received echo. By combining the measurements of all four transducers and the time between each acoustic pulse, it is possible to very accurately estimate the speed and direction of movement.
-
-## DVL A50 Specs: 
-range: 0.05-50 m
-
-## Hardware
+## Status Check
 
 ### LED Signals
 
@@ -25,7 +20,7 @@ range: 0.05-50 m
 
 ## DVL data
 
-## Serial Protocol
+### Serial Protocol
 
 The serial communication format is 115200 8-N-1 (no hardware flow control).
 
@@ -41,7 +36,7 @@ The commands can be sent as a string or entered one char at a time from a termin
 The protocol can support Water Linked DVLs with different feature sets.
 The DVL always returns a checksum. The checksum algorithm is CRC-8 and it is formatted as a hexadecimal number using 2 lower-case charaters (ex: `*c3`).
 
-### Commands
+#### Commands
 
 Commands in the table are shown **without** the checksum for readability.
 
@@ -53,10 +48,12 @@ Commands in the table are shown **without** the checksum for readability.
 |         |             | `wrx,`*[details below]* | Velocities measured. See details below |
 |         |             | `wr?` | Malformed request: Response when packet cannot be understood |
 |         |             | `wr!` | Malformed request: Packet does not match the given checksum |
-#### Ethernet protocol (TCP)
+
+## Ethernet protocol (TCP)
 The DVL supports sending velocity updates using the Transmission Control Protocol (TCP). The DVL runs a TCP server on port 16171.
 Each packet sent contains a velocity report from the DVL on JSON format.
-##### Velocity Report
+
+### Velocity Report
 Velocity report is outputted after each measurement has been completed. The expected update rate varies depending on the altitude and will be in the range is from 2-26 Hz. The X, Y, Z axis are oriented according to the marking on the DVL. The messages are delimited by newline. 
 The velocities measured response is on the following format:
 `wrx,[time],[vx],[vy],[vz],[fom],[altitude],[valid],[status]`
@@ -117,7 +114,7 @@ Example where distance is not valid on transducer 4:
 wrt,14.90,15.10,14.80,-1.00*53
 wrt,15.00,15.20,14.90,-1.00*71
 ```
-### Example of TCP report. (valid)
+#### Example of TCP report. (valid)
 ```
 {"time":126.04666137695312,"vx":0.009757072664797306,"vy":0.002016076585277915,"vz":-0.0002864645794034004,"fom":0.00016600292292423546,"altitude":1.8710078001022339,
 "transducers":[{"id":0,"velocity":-0.002349231392145157,"distance":2.041400194168091,"rssi":30.97574806213379,"nsd":19.906816482543945,"beam_valid":true},
@@ -125,7 +122,7 @@ wrt,15.00,15.20,14.90,-1.00*71
 {"id":2,"velocity":0.00183798186480999,"distance":2.0886001586914062,"rssi":31.835567474365234,"nsd":22.06237030029297,"beam_valid":true},
 {"id":3,"velocity":0.0029014351312071085,"distance":2.041400194168091,"rssi":37.41792678833008,"nsd":23.786922454833984,"beam_valid":true}],"velocity_valid":true,"status":0,"format":"json_v1"}
 ```
-### Example of TCP report. (invalid)
+#### Example of TCP report. (invalid)
 ```
 {"time":429.1646423339844,"vx":0,"vy":0,"vz":0,"fom":2.661566972732544,"altitude":-1,
 "transducers":[{"id":0,"velocity":0,"distance":-1,"rssi":-37.079925537109375,"nsd":25.96938133239746,"beam_valid":false},
@@ -134,7 +131,7 @@ wrt,15.00,15.20,14.90,-1.00*71
 {"id":3,"velocity":0,"distance":-1,"rssi":-37.11658477783203,"nsd":26.229419708251953,"beam_valid":false}],"velocity_valid":false,"status":0,"format":"json_v1"}
 ```
 
-### Example of TCP report. (indented for readability)
+#### Example of TCP report. (indented for readability)
 
 ```
 {
