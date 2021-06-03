@@ -1,12 +1,8 @@
-# BlueROV DVL wiki
+# WaterLinked DVL A50 wiki
 
 Integration instruction and operation guides of WaterLinked DVL A50 with BlueROV2, by Siyuan Chang and Alex Tretyakov.
 
 This is the repository of the DVL group for the course CA-RIS-801 Marine Robotics in Spring 2021 by Prof. Francesco Maurelli of Jacobs University Bremen. The file 'dvl-history.md' is the main working doc.
-
-# BlueROV DVL wiki
-
-This is the repository of the DVL group for Marine Robotics at Jacobs University. The file 'dvl-history.md' is our main working doc.
 
 ## introduction
 
@@ -191,3 +187,26 @@ wrt,15.00,15.20,14.90,-1.00*71
 
 ## ROS Message
 WaterLinked provides a package that turns the json output to ROS message. 
+```
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+float64 time
+geometry_msgs/Vector3 velocity
+  float64 x
+  float64 y
+  float64 z
+float64 fom
+float64 altitude
+waterlinked_a50_ros_driver/DVLBeam[] beams
+  int64 id
+  float64 velocity
+  float64 distance
+  float64 rssi
+  float64 nsd
+  bool valid
+  bool velocity_valid
+int64 status
+string form
+            ```
