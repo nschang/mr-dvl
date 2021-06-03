@@ -43,12 +43,10 @@ Commands in the table are shown **without** the checksum for readability.
 | Command | Description | Response | Description |
 |---------|-------------|----------|-------------|
 | `wcv`   | Get protocol version | `wrv,`*[major],[minor],[patch]* | Protocol version. eg: `wrv,2.1.0` |
-| `wcw`   | Get product detail | `wrw,`*[name]*,*[version]*,*[chipID]*,*[IP address]* | Where type is dvl, name is product name, version is software version, chip ID is the chip ID and _optionally_ the IP address if connected to DHCP server: 
-eg: `wrw,dvl-a50,1.4.0,0xfedcba98765432` or `wrw,dvl-a50,1.4.0,0xfedcba98765432,10.11.12.140` |
-|         |             |          |              |
-|         |             | `wrx,`*[details below]* | Velocities measured. See details below |
-|         |             | `wr?` | Malformed request: Response when packet cannot be understood |
-|         |             | `wr!` | Malformed request: Packet does not match the given checksum |
+| `wcw`   | Get product detail | `wrw,`*[name]*,*[version]*,*[chipID]*,*[IP address]* | Where type is dvl, name is product name, version is software version, chip ID is the chip ID and _optionally_ the IP address if connected to DHCP server: eg: `wrw,dvl-a50,1.4.0,0xfedcba98765432` or `wrw,dvl-a50,1.4.0,0xfedcba98765432,10.11.12.140` |
+| `wrx,`| Velocities measured.|
+| `wr?` | Malformed request: Response when packet cannot be understood |
+| `wr!` | Malformed request: Packet does not match the given checksum |
 
 ## Ethernet protocol (TCP)
 The DVL supports sending velocity updates using the Transmission Control Protocol (TCP). The DVL runs a TCP server on port 16171.
