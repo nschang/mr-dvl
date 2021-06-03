@@ -225,3 +225,122 @@ waterlinked_a50_ros_driver/DVLBeam[] beams
 int64 status
 string form
 ```
+
+# working with DVL
+
+## Operation within QGC
+
+### For Position Hold
+
+            1. go to http://192.168.2.2:2770/waterlinked
+            2. the "Status" field in the Waterlinked page should read Running.... 
+            3. QGC will announce "EKF3 IMU0 STARTED RELATIVE AIDING" and then "EKF3 IMU0 FUSING ODOMETRY" (This means the DVL input is being fused.)
+            4. switch to POSHOLD mode
+
+### For Deadreckoning (track ROV position in QGC map view): The DVL data is sent by the VISION_POSITION_DELTA mavlink message <https://mavlink.io/en/messages/ardupilotmega.html#VISION_POSITION_DELTA>
+
+            1. go to http://192.168.2.2:2770/waterlinked 
+            2. place the pin in the starting position
+            3. click "Set New Origin".
+
+## ways to communicate with DVL and read data
+
+### web interface
+
+            dvl web-GUI: http://192.168.2.95/#/
+            dvl setting: http://192.168.2.2:2770/waterlinked
+
+#### Driver Enable
+
+                    Enables or disables the DVL Driver
+
+#### DVL IP Adress
+
+                    Inital IP where the driver will try to find the DVL. The driver always attempts to find Waterlinked-dvl.local (mDNS hostname) in the local network, if that fails, it falls back to the IP address in this field.
+
+#### Orientation
+
+                    Orientation of the DVL: Down is the suggested use, where the DVL points to the ocean floor, Forward is an untested mode where the dvl is mounted forward to lock position to a vertical surface in front of it.
+
+#### Use as Rangefinder
+
+                    Allows the DVL to be used as a rangefinder (shown in QGC).
+
+#### Restart DVL Service
+
+                    Restarts the DVL service.
+
+#### Set New Origin
+
+                    Used for dead reckoning; this makes the ROV show up in QGC at the selected location. The position displayed in QGC is calculated by the autopilot independently of the position showed in the Water Linked DVL web interface, which is calculated by the DVL itself.
+
+#### Status
+
+                    Shows the current Driver status, useful for troubleshooting.
+
+## TCP (Transmission Control Protocol)
+
+            a TCP server is run on port 16171, sends velocity report from the DVL on JSON format
+
+### Velocity report
+
+                wrx,[time],[vx],[vy],[vz],[fom],[altitude],[valid],[status] 
+                    time: Milliseconds since last velocity report (ms)
+                    vx: Measured velocity in x direction (m/s)
+                    vy: Measured velocity in y direction (m/s)
+                    vz: Measured velocity in z direction (m/s)
+                    fom: Figure of merit, a measure of the accuracy of the measured velocities (m/s)
+                    altitude: measurement of the distance between the transducer and the bottom (m)                
+                    valid: bottomlock and valid altitude and velocities (y/n)
+                    status: 0 for normal operation, 1 for high temperature warning
+
+#### example valid velocity
+
+                    wrx,112.83,0.007,0.017,0.006,0.000,0.93,y,0*d2
+                    wrx,140.43,0.008,0.021,0.012,0.000,0.92,y,0*b7
+                    wrx,118.47,0.009,0.020,0.013,0.000,0.92,y,0*54
+
+#### example invalid velocity
+
+                    wrx,1075.51,0.000,0.000,0.000,2.707,-1.00,n,1*04
+                    wrx,1249.29,0.000,0.000,0.000,2.707,-1.00,n,1*6a
+                    wrx,1164.94,0.000,0.000,0.000,2.707,-1.00,n,1*39
+
+### Transducer report: Measured distance to bottom from each transduser
+
+                wrt,[dist_1],[dist_2],[dist_3],[dist_4]
+
+#### example valid distance
+
+                    wrt,15.00,15.20,14.90,14.20*b1
+                    wrt,14.90,15.10,14.80,14.10*ac
+
+#### example invalid distance
+
+                    wrt,14.90,15.10,14.80,-1.00*53
+                    wrt,15.00,15.20,14.90,-1.00*71
+
+## Data Output
+
+        ros message
+        code: 
+            function: read dvl data, save as readable file
+                $ roscore
+            for server node: 
+                $ rosrun comm_tcp server_node 16171
+            for client node: 
+                $ rosrun comm_tcp client_node 192.168.2.95 16171
+        used MAC as a client (for now, to generate data string for nav team):
+            read data in terminal: 
+                $ nc 192.168.2.95 16171
+            read data and save to text file:
+                $ nc 192.168.2.95 16171 > out.txt
+
+# ways to read data from dvl
+
+## commandline
+
+        read data in terminal: 
+            $ nc 192.168.2.95 16171
+        read data and save to text file:
+            $ nc 192.168.2.95 16171 > out.txt
