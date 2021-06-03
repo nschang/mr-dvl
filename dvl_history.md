@@ -14,6 +14,7 @@ Command History - DVL
     $ sudo netplan generate
     $ sudo netplan apply
     ```
+
 14:10 performed system upgrade
     ```
     $ sudo dpkg-reconfigure -plow unattended-upgrades
