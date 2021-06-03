@@ -18,8 +18,6 @@ DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic bea
 
 * Fixed green light: DVL has bottom lock. The LED is mostly on and blinks quickly to show we are alive.
 
-## DVL data
-
 ### Serial Protocol
 
 The serial communication format is 115200 8-N-1 (no hardware flow control).
