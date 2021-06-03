@@ -5,7 +5,7 @@ Command History - DVL
 12:30 Entered Duckietown
 
 ## working on new pi
-
+ 
 13:00 Ubuntu Login
 
 14:00 connected to Wifi. 
