@@ -1,4 +1,3 @@
-
 20-05-2021
 
 12:30 Entered Duckietown
@@ -369,6 +368,8 @@ NEXT:
 	$ export $PATH
 	$ export PATH=$PATH:/home/pi:/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
 
+use pip3.6 instead!
+use python3.6 instead!
 
 25-05-2021
 
@@ -523,11 +524,12 @@ Repair:
 	$ apt-get install -f
 	$ sudo apt-get -f install
 Maintenance
-	$ sudo apt-get update && sudo apt-get upgrade
-	$ sudo apt-get clean && sudo apt-get autoclean && sudo apt-get autoremove
+	$ sudo apt-get update ; sudo apt-get upgrade
+	$ sudo apt-get clean ; sudo apt-get autoclean ; sudo apt-get autoremove
 
 Workspace Maintenance:
-	$ catkin clean --orphans				# Cleaning Products from Missing Packages
+	# Cleaning Products from Missing Packages
+	$ catkin clean --orphans
 
 # TASKS
 FIRST: install ROS workspace
@@ -1104,10 +1106,6 @@ solved!!!added repos:
 
 	catkin_make --only-pkg-with-deps waterlinked-a50-ros-driver
 
-
-rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95 _do_log_data:=true
-
-
 # solving NO_PUBKEY during apt-get update
 	gpg --recv-keys AA8E81B4331F7F50
 	gpg --export AA8E81B4331F7F50| apt-key add -
@@ -1116,19 +1114,181 @@ wget http://mirrordirector.raspbian.org/raspbian/pool/main/h/hdf5/hdf5-helpers_1
 sudo dpkg -i hdf5-helpers_1.8.13+docs-15+deb8u1_armhf.deb
 sudo apt-get install libgazebo7-dev
 
+git commit -m
+git push
 
+31-05-2021
+# Error: When catkin_make freezes the pi: 
+	Recover by: ctrl+c
+	Potential solution, try again using 
+		$ catkin_make -j1 #single-thread compilation
+		or
+		$ catkin_make -j2 #double-thread compilation
+		or 
+		$ catkin_make -j4 -l4 #quadruple-thread compilation
 
+# Error: 
+	Fix: 
+		sudo nano /usr/include/tbb/machine/gcc_armv7.h
+	go to line 38
+	original:  
+		38 #if !(__ARM_ARCH_7A__)
+		39 #error compilation requires an ARMv7-a architecture.   
+		40 #endif
+	after fix:
+		38 //#if !(__ARM_ARCH_7A__)
+		39 //#error compilation requires an ARMv7-a architecture.   
+		40 //#endif*/
+	then go to line 64
+	original:
+		#define __TBB_full_memory_fence() __asm__ __volatile__("dmb ish": : :"memo    ry")
+	after fix:
+		64 #define __TBB_full_memory_fence() 0xffff0fa0  // __asm__ __volatile__("dmb ish": : :"memo    ry")
+	reason behind: 
+		https://stackoverflow.com/questions/30131032/compile-opencv-with-tbb-on-raspberry-pi-2
+		The alternative for using dmb is to call the Linux kernel __kuser_memory_barrier. The __kuser_memory_barrier helper operation is found in all ARM kernels 2.6.15 and later and provide a way to issue a memory barrier that will work across all ARM arch.__kuser_memory_barrier helper function found at address 0xffff0fa0
+
+# QGC: Missing params: 1:COMPASS_PRIMARY
+	Versions: 
+		QGC Version: downloaded from BlueROV page. Recommended.
+		ArduSub version: 4.1.0 (beta)
+	Cause: 
+		Parameter for Compass changed in ArduSub. QGC not caught up with latest change in parameter. However current version of QGC is recommended by BlueROV & am still able to calibrate without the parameter. Not worthy to solve.
+	Fix: IGNORED!
+
+# Pixahawk connection
+	Gripper: 3
+
+01-06-2021
+
+# 
+	rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95 _do_log_data:=true
+	roscore
+	rostopic list -v
+		Published topics:
+		 * /rosout [rosgraph_msgs/Log] 1 publisher
+		 * /rosout_agg [rosgraph_msgs/Log] 1 publisher
+
+		Subscribed topics:
+		 * /rosout [rosgraph_msgs/Log] 1 subscriber
+		 * /dvl/json_data [std_msgs/String] 1 subscriber
+		 * /dvl/data [waterlinked_a50_ros_driver/DVL] 1 subscriber
+
+	how to publish ros message in terminal:
+		$ rosmsg show waterlinked_a50_ros_driver/DVL
+			std_msgs/Header header
+			  uint32 seq
+			  time stamp
+			  string frame_id
+			float64 time
+			geometry_msgs/Vector3 velocity
+			  float64 x
+			  float64 y
+			  float64 z
+			float64 fom
+			float64 altitude
+			waterlinked_a50_ros_driver/DVLBeam[] beams
+			  int64 id
+			  float64 velocity
+			  float64 distance
+			  float64 rssi
+			  float64 nsd
+			  bool valid
+			bool velocity_valid
+			int64 status
+			string form
+
+# standard package installation procedure
+	rosdep update
+	cd ~/catkin_ws/src
+	wstool merge https://raw.github.com/knowrob/knowrob/master/rosinstall/knowrob-base.rosinstall
+	wstool update
+	rosdep install --ignore-src --from-paths .
+	cd ~/catkin_ws
+	catkin_make
+Replace "<package-name>"" with the name of desired package (including the brackets!). It may be a subpackage so search for it first:
+go to http://wiki.ros.org/<package-name>?distro=kinetic
+	cd ~/catkin_ws/src
+	git clone -b kinetic-devel https://github.com/ros/<package-name>.git
+	cd ~/catkin_ws
+	wstool update -j4 -t src #Alternative: wstool update
+	rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie #Alternative: rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+# installation with wstool
+	cd ~/gilbreth_ws/src
+	wstool init . #create local .rosinstall file
+	wstool merge https://raw.githubusercontent.com/swri-robotics/gilbreth/kinetic-devel/gilbreth.rosinstall #merge .rosinstall file to local
+	wstool update #download the file
+content of an example .rosinstall file (gilbreth.rosinstall):
+	- git:
+	    local-name: gilbreth
+	    uri: https://github.com/swri-robotics/gilbreth.git
+	    version: kinetic-devel	
+	- git:
+	    local-name: universal_robot
+	    uri: https://github.com/ros-industrial/universal_robot.git
+	    version: kinetic-devel
+# list all installed ROS packages
+	rospack list-names
+
+# make full system back up
+	lsblk #check if backup disk plugged in and mountable
+	sudo mount /dev/sdb1 /media/usb
+	lsblk #check if backup disk mounted correctly
+	sudo tar cvfpz /media/usb/backup-companion-20210601.tar.gz --exclude=/backup.tar.gz --exclude=/media/usb --one-file-system /
+		command dissection: 
+			tar - is the command that creates the archive. It is modified by each letter immediately following, each is explained bellow.
+				c - create a new backup archive.
+				v - verbose mode, tar will print what it's doing to the screen.
+				p - preserves the permissions of the files put in the archive for restoration later.
+				z - compress the backup file with 'gzip' to make it smaller.
+				f <filename> - specifies where to store the backup, backup.tar.gz is the filename used in this example. It will be stored in the current working directory, the one you set when you used the cd command.
+			--exclude=/backup.tar.gz --exclude=/media/usb: exclude existing backups
+			--one-file-system: only backup files in one filesystem, excludes unnecessary files
+			/: backup root directory
+# to restore the backup: 
+	sudo mount /dev/sdb1 /media/usb
+	lsblk #check if backup disk mounted correctly
+	tar xvfpz /media/usb/backup-companion-20210601.tar.gz
+
+# Successful backup at 18:30 01-06-2021.
+
+Goals：
+	1. 整理tabs
+	2. 拼音输入法设置
+	3. catkin_make no errors
+	4. github syntax learn: how to make a wiki?
+	5. test out gripper 
+	6. ardusub parameters learn
+	4. 海丝文档
+	5. research proposal langmuir
+	8. drive learn
+test tomorrow: 
+	gripper (bring 2 usb-usbc adapter!)
+	
+02-06-2021
+# problem with joystick
+	problem one: unable to control camera after a few working commands (camera stops moving or turning up/down erratically that only stopped when powered off)
+	problem two: QGC does not recognize joystick in X mode. (Newton SeaGripper Wiki recommends to use X mode). Does it matter?
+	Changed Joystick button assignment: 
+		First use Joystick show, detect LT & RT are button 7&8. 
+		Go to Vehicle setting -> Joystick -> Button Assignment
+			original: 
+				7: mount_center Disabled 
+				8: input_hold_set Disabled
+				9: mount_tilt_down mount_pan_left
+				10: mount_tilt_up mount_pan_right
+			New: 
+				7: mount_center Disabled 
+				8: input_hold_set Disabled
+				9: servo_3_min_momentary mount_tilt_down
+				10: servo_3_max_momentary mount_tilt_up			
+			It worked!
+		but "shifting" the buttons via the center button (with Logitech Logo) only works in Windows.
+	https://aws1.discourse-cdn.com/business5/uploads/bluerobotics/original/2X/7/70cd1c739db137407c58c29e6418d7089eadbc42.jpg
+Notes on X (XInputMode): 
+	In XInput mode, the gamepad uses standard Windows XInput gamepad drivers. It is not necessary to install the included software CD unless you will be using the gamepad in DirectInput mode.
 
 _______________________________________________________________________________
-
-# Questions asked by prof. Maurelli: 
-	- Explain how it works in terms of ROS topic, ros package.
-		A data publisher that starts as soon as it starts. To use it just subscribe to it. 
-	- range of the sensor? Is it configurable?
-	- you need to explain what work did you do
-
-# other things to mention
-as Peter mentioned in his presentation, waterlinked provided a package that turns json to ros message. 
 
 # working with DVL
 ##	Operation within QGC:
@@ -1168,8 +1328,7 @@ as Peter mentioned in his presentation, waterlinked provided a package that turn
 					vy: Measured velocity in y direction (m/s)
 					vz: Measured velocity in z direction (m/s)
 					fom: Figure of merit, a measure of the accuracy of the measured velocities (m/s)
-					altitude: (m)
-# how exactly is altitude measured?????					
+					altitude: measurement of the distance between the transducer and the bottom (m)				
 					valid: bottomlock and valid altitude and velocities (y/n)
 					status: 0 for normal operation, 1 for high temperature warning
 ####			example valid velocity:
@@ -1208,18 +1367,6 @@ as Peter mentioned in his presentation, waterlinked provided a package that turn
 			$ nc 192.168.2.95 16171
 		read data and save to text file:
 			$ nc 192.168.2.95 16171 > out.txt
-
-31-05-2021
-# Error: When catkin_make freezes the pi: 
-	Recover by: ctrl+c
-	Potential solution, try again using 
-		$ catkin_make -j1 #single-thread compilation
-		or
-		$ catkin_make -j2 #double-thread compilation
-		or 
-		$ catkin_make -j4 -l4 #quadruple-thread compilation
-
-
 _______________________________________________________________________________
 # Status as of 26-05-2021 15:11
 	Current status of the companion pi: the currently installed version is ros-kinetic_comms-wet, a bare bone installation with basic communication functions. The active workspace is catkin_ws. catkin_make returns no error in its current state. A disk mirror of /home/pi has been made on 26-05-2021 15:11.
