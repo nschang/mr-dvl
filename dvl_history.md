@@ -1189,8 +1189,8 @@ git push
 01-06-2021
 
 # 
-    rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95 _do_log_data:=true
     roscore
+    rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95 _do_log_data:=true
     rostopic list -v
         Published topics:
          * /rosout [rosgraph_msgs/Log] 1 publisher
