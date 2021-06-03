@@ -7,6 +7,7 @@ Command History - DVL
 ## working on new pi
 
 13:00 Ubuntu Login
+
 14:00 connected to Wifi. 
     ```
     $ sudo nano /etc/netplan/50-cloud-init.yaml
