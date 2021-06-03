@@ -4,13 +4,17 @@ Integration instruction and operation guides of WaterLinked DVL A50 with BlueROV
 
 This is the repository of the DVL group for the course CA-RIS-801 Marine Robotics in Spring 2021 by Prof. Francesco Maurelli of Jacobs University Bremen. The file 'dvl-history.md' is the main working doc.
 
+This is a layout of the document.
+
+- 
+
 ## introduction
 
 DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic beams to measure distance to bottom surface and the velocity which the unit is moving across the surface. The DVL estimates velocity relative to the sea bottom by sending acoustic waves from the four angled transducers and then measure the frequency shift (doppler effect) from the received echo. By combining the measurements of all four transducers and the time between each acoustic pulse, it is able to accurately estimate the speed and direction of the movement of vehicle.
 
 ## Status Check
 
-### LED Signals
+    ### LED Signals
 
 * No green light: Power is off.
 
