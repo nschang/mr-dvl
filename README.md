@@ -24,22 +24,8 @@ Follow the steps required to start using DVL with BlueROV:
 
 
 In browser, go to 192.168.2.95, check for active data or error messages
+
 In another tab, go to 192.168,2.2:2770/waterlinked for management page.
-### web interface
-
-dvl web-GUI: http://192.168.2.95/#/
-
-dvl setting: http://192.168.2.2:2770/waterlinked
-
-| Control Variables    | description                                                                 |
-| ------------ | --------------------------------------------------------------------------- |
-| Driver Enable | Enables or disables the DVL Driver | 
-| DVL IP Address | Inital IP where the driver will try to find the DVL. The driver always attempts to find Waterlinked-dvl.local (mDNS hostname) in the local network, if that fails, it falls back to the IP address in this field. | 
-| Orientation | Orientation of the DVL: Down is the suggested use, where the DVL points to the ocean floor, Forward is an untested mode where the dvl is mounted forward to lock position to a vertical surface in front of it. | 
-| Use as Rangefinder | Allows the DVL to be used as a rangefinder (shown in QGC). | 
-| Restart DVL Service | Restarts the DVL service. | 
-| Set New Origin | Used for dead reckoning; this makes the ROV show up in QGC at the selected location. The position displayed in QGC is calculated by the autopilot independently of the position showed in the Water Linked DVL web interface, which is calculated by the DVL itself. | 
-| Status | Shows the current Driver status, useful for troubleshooting. | 
 
 For more detils on reading DVL data, go to dvl-data.
 
@@ -65,6 +51,9 @@ cd ~/dvl-python
   1. go to http://192.168.2.2:2770/waterlinked 
   2. place the pin in the starting position
   3. click "Set New Origin".
+
+## Nice guides to follow
+[BlueROV2 Software Setup](https://bluerobotics.com/learn/bluerov2-software-setup/#update-software)
 
 
 Contributor: 
