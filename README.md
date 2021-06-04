@@ -1,4 +1,4 @@
-# WaterLinked DVL A50 wiki
+# WaterLinked DVL A50 - BlueROV2 Integration
 
 ## Content: 
 The file 'dvl-history.md' is the main working doc.
@@ -7,19 +7,22 @@ The file 'dvl-history.md' is the main working doc.
 - dvl-a50-ros: ROS-related setup for dvl-a50
 - Communication Protocol
 
-for Hardware integration, as well as other introductory content, please refer to [Wiki](/wiki) of this repo.
+for Hardware integration, as well as other introductory content, please refer to [Wiki](https://github.com/nschang/mr-dvl/wiki) of this repo.
 
 ## Waterlinked DVL A50 - Quick Start
 
-# DVL A50 Quick Start
+Follow the steps required to start using DVL with BlueROV: 
+- Hardware integration
+- Connection
+  - DVL 8-pin connection
+  - Connect landside terminal to BlueROV through Fathom-X Tether Interface (FXTI)
+  - Make Sure BlueROV is set up correctly and running
+- Software Setup
+- Status Check
+  - DVL LED: flashing (loonking for bottomlock) or fixed green light (bottomlocked)
+  - when running dry on land, it is recommended to add additional cooling to DVL by water or wind.
 
-This section lays out the steps required to start using DVL with BlueROV: 
 
-1. Status Check
-Check Connection: DVL 8-pin connection
-Connect Laptop to BlueROV tether USB
-Power-up BlueROV
-Check Status: LED flashing or fixed green light
 In browser, go to 192.168.2.95, check for active data or error messages
 In another tab, go to 192.168,2.2:2770/waterlinked for management page.
 ### web interface
@@ -62,21 +65,6 @@ cd ~/dvl-python
   1. go to http://192.168.2.2:2770/waterlinked 
   2. place the pin in the starting position
   3. click "Set New Origin".
-
-
-## introduction
-
-DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic beams to measure distance to bottom surface and the velocity which the unit is moving across the surface. The DVL estimates velocity relative to the sea bottom by sending acoustic waves from the four angled transducers and then measure the frequency shift (doppler effect) from the received echo. By combining the measurements of all four transducers and the time between each acoustic pulse, it is able to accurately estimate the speed and direction of the movement of vehicle.
-
-## Status Check
-
-  ### LED Signal
-
-  * No green light: Power is off.
-
-  * Flashing green light (slow): DVL loocking for bottom lock.
-
-  * Fixed green light: DVL has bottom lock. The LED is mostly on and blinks quickly to show we are alive.
 
 
 Contributor: 
