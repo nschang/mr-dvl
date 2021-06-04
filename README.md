@@ -55,10 +55,17 @@ for more info on the format and meaning of variables, go to [dvl-a50-data](/dvl-
 
 ### dvl-python
 In companion, type:
-```
-  $ ping 192.168.2.2
-  $ ssh pi@192.168.2.2
+```bash
+  $ pip install crcmod pyserial
+  $ cd /home/pi/
+  $ git clone https://github.com/waterlinked/dvl-python.git
   $ cd ~/dvl-python
+  $ pip install -e .
+  $ python
+    >>>  from wldvl import WlDVL
+    >>>  dvl = WlDVL("/dev/ttyUSB0")
+    >>>  dvl.read()
+        {'fom': 0.002, 'time': 40.57, 'vy': 0.004, 'vz': -0.002, 'vx': -0.003, 'valid': True, 'altitude': 0.14}
 ```
 
 ## DVL ROS messages
