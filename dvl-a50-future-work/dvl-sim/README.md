@@ -1,17 +1,11 @@
-# Future Work on DVL
+# Work with DVL and BlueROV in a simulation environment
 
-This folder contains the work currently under development or planned for future on DVL an BlueROV2. 
+Moving the robot to and from the pool is quite some labour. Not having easy access to water suitable for testing is also a major hinderance in development of underwater robotics. Therefore, would be interesting to explore options to simulate the vehicle and environment input in a virtual environment. 
 
-## Software-Side:
+There are currently a few ways to do this: 
 
-- Set up `Position_Hold` and `Track_Path` Modes in QGC
+1. BlueSim, a tailored simulation package made by BlueRobotics. 
 
-- Set up a Simulation Environment for equipment testing
+2. Gazebo
 
-- DVL & Companion local Wiki (Operation guides, bugs, etc.)
-
-- ADCP Modification
-
-## Hardware-Side
-
-- quick-switch for battery housing
+Some major fuss has been encountered when setting up the virtual environment (VirtualBox+Vagrant) on MacOSX, which is generally [not recommended](https://ardupilot.org/dev/docs/setting-up-sitl-using-vagrant.html). Therefore, waiting to implement this on a newly ordered RPi-4, awaiting shipment...
