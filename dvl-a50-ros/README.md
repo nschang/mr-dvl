@@ -2,16 +2,6 @@
 
 A repo cloned from [dvl-a50-ros-driver](https://github.com/nschang/dvl-a50-ros-driver) by Water Linked is available at [dvl-a50-ros-driver](/dvl-a50-ros/dvl-a50-ros-driver). Modified for local deployment. 
 
-## The DVL-A50 ROS node
-The DVL ROS node publishes data to the topics: "*dvl/json_data*" and "*dvl/data*".
-* *dvl/json_data*: uses a simple String formated topic that publishes the raw json data coming from the DVL.
-* *dvl/data*: Uses a custom message type that structures the parsed data following our protocol. Read more about the protocol here: [DVL Protocol](https://waterlinked.github.io/docs/dvl/dvl-protocol/)
-
-![rqt_graph of the package in action](https://raw.githubusercontent.com/waterlinked/dvl-a50-ros-driver/master/img/a50_graph.png?raw=true "Graph of the package's node-to-node structure")
-
-*The graph illustrates the topics and nodes created when the package is run.*
-
-
 ### Prerequisites
 The package has been tested with ROS Kinetic and is working. The package is coded in Python for easier readability, as such you would need to have Python installed. Preferably **Python 2.7** as some distros of ROS doesn't support Python 3.
 
@@ -80,3 +70,13 @@ waterlinked_a50_ros_driver/DVLBeam[] beams
 int64 status
 string form
 ```
+
+## The DVL-A50 ROS node
+The DVL ROS node publishes data to the topics: "*dvl/json_data*" and "*dvl/data*".
+* *dvl/json_data*: uses a simple String formated topic that publishes the raw json data coming from the DVL.
+* *dvl/data*: Uses a custom message type that structures the parsed data following our protocol. Read more about the protocol here: [DVL Protocol](https://waterlinked.github.io/docs/dvl/dvl-protocol/)
+
+![rqt_graph of the package in action](https://raw.githubusercontent.com/waterlinked/dvl-a50-ros-driver/master/img/a50_graph.png?raw=true "Graph of the package's node-to-node structure")
+
+*The graph illustrates the topics and nodes created when the package is run.*
+
