@@ -53,14 +53,17 @@
     sudo apt install ros-noetic-desktop
     ```
 15:20 ROS environment setup
-    ```bash
+
+```bash
     source /opt/ros/noetic/setup.bash
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
     source ~/.bashrc
 
 ```
+
 15:30 Dependencies for building packages
-    ```bash
+
+```bash
     sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
     sudo apt install python3-rosdep
     sudo rosdep init
@@ -135,7 +138,8 @@
 17:00 dvl is not working. trouble shooting.
 17:15 solved. dvl power cable is loose! reconnecting.
 18:00 re-installing ros-kinetic (ros-comm, as ROS wiki recommended here <https://wiki.ros.org/ROSberryPi/Installing%20ROS%20Kinetic%20on%20the%20Raspberry%20Pi>) on system.
-    ```bash
+
+```bash
     rosversion -d
         kinetic
     cat /etc/os-release
@@ -159,7 +163,8 @@
 ```
 
 18:30 resolving unavailable dependencies
-    ```bash
+
+```bash
     mkdir -p ~/ros_catkin_ws/external_src
     cd ~/ros_catkin_ws/external_src
     wget <http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download> -O assimp-3.1.1_no_test_models.zip
@@ -175,7 +180,8 @@
 ```
 
 20:00 finished installation
-    ```bash
+
+```bash
     mv -i kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
     rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --tar > kinetic-desktop-full-wet.rosinstall
     diff -u kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
@@ -195,6 +201,8 @@
 ### encountered problem with catkin_make: missing package
 
 CMake Warning at /opt/ros/kinetic/share/catkin/cmake/catkinConfig.cmake:76 (find_package):
+
+```
     Could not find a package configuration file provided by "geometry_msgs" with any of the following names:
 
     geometry_msgsConfig.cmake
@@ -222,19 +230,21 @@ See also "/home/pi/catkin_ws/build/CMakeFiles/CMakeError.log".
 Makefile:318: recipe for target 'cmake_check_build_system' failed
 make: *** [cmake_check_build_system] Error 1
 Invoking "make cmake_check_build_system" failed
+```
 
 ---END OF DAY 20210520---
 
-# 21-05-2021
+## 21-05-2021
 
 9:30 entered Duckietown
 
-## working on companion pi
+---working on companion pi---
 
 ### backed up home dir following <https://www.raspberrypi.org/documentation/linux/filesystem/backup.md>
 
-10:00 try to install ROS kinetic-desktop-full. Reason for re-install: catkin_make bluerov package returns Cmake error, missing two packages: "geometry_msgsConfig.cmake" and "geometry_msgs-config.cmake" which are both included in the desktop_full install.
-    ```bash
+10:00 try to install ROS kinetic-desktop-full. Reason for re-install: `catkin_make`bluerov package returns Cmake error, missing two packages: "geometry_msgsConfig.cmake" and "geometry_msgs-config.cmake" which are both included in the desktop_full install.
+
+```bash
     sudo sh -c 'echo "deb <http://packages.ros.org/ros/ubuntu> $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
     sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
     sudo apt-get update && sudo apt-get upgrade
@@ -247,68 +257,85 @@ Invoking "make cmake_check_build_system" failed
     -- Performing Test HAVE_CXX_WNO_SHORTEN_64_TO_32 - Failed
     -- Performing Test HAVE_CXX_WNO_TAUTOLOGICAL_UNDEFINED_COMPARE - Failed
     -- Performing Test HAVE_CXX_WNO_MISSING_PROTOTYPES - Failed
+```
+
 16:00 uninstalled Python 3
 
 18:00 initiated: building catkin workspace (LONG PROCESS > 3h) ABORTED AT ERROR
     cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
 22:00 solving tf2 error (SOLVED)
-        '''bash
+
+```bash
         <== Failed to process package 'tf2':
           Command '['/opt/ros/kinetic/env.sh', 'make', '-j4', '-l4']' returned non-zero exit status 2
 
         Reproduce this error by running:
         ==> cd /home/pi/catkin_ws/build_isolated/tf2 && /opt/ros/kinetic/env.sh make -j4 -l4
-        '''
+```
+
     %%%seems to be another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError. Fixed with following command%%%
-        cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
-            %%%original%%%
-                '''            
-                #include "tf2/buffer_core.h"
-                #include "tf2/time_cache.h"
-                #include "tf2/exceptions.h"
-                #include "tf2_msgs/TF2Error.h"
 
-                #include <assert.h>
-                #include <console_bridge/console.h>
-                #include "tf2/LinearMath/Transform.h"
-                #include <boost/foreach.hpp>
+```bash
+cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
+```
 
-                namespace tf2
-                {
+%%%original%%%
 
-                ...
+```
+    #include "tf2/buffer_core.h"
+    #include "tf2/time_cache.h"
+    #include "tf2/exceptions.h"
+    #include "tf2_msgs/TF2Error.h"
 
-                rest of the code
-                '''
-            %%%updated%%%    
-                '''            
-                #include "tf2/buffer_core.h"
-                #include "tf2/time_cache.h"
-                #include "tf2/exceptions.h"
-                #include "tf2_msgs/TF2Error.h"
+    #include <assert.h>
+    #include <console_bridge/console.h>
+    #include "tf2/LinearMath/Transform.h"
+    #include <boost/foreach.hpp>
 
-                #include <assert.h>
-                #include <console_bridge/console.h>
-                #include "tf2/LinearMath/Transform.h"
-                #include <boost/foreach.hpp>
+    namespace tf2
+    {
 
-                #ifndef logError // added by frank26080115
-                #define logError CONSOLE_BRIDGE_logError
-                #endif
+    ...
 
-                #ifndef logWarn // added by frank26080115
-                #define logWarn CONSOLE_BRIDGE_logWarn
-                #endif
+    rest of the code
+```
 
-                namespace tf2
-                {
+#
 
-                ...
+%%%updated%%%
+            %%%updated%%%
+%%%updated%%%
 
-                rest of the code
-                '''
+```
+    #include "tf2/buffer_core.h"
+    #include "tf2/time_cache.h"
+    #include "tf2/exceptions.h"
+    #include "tf2_msgs/TF2Error.h"
+
+    #include <assert.h>
+    #include <console_bridge/console.h>
+    #include "tf2/LinearMath/Transform.h"
+    #include <boost/foreach.hpp>
+
+    #ifndef logError // added by frank26080115
+    #define logError CONSOLE_BRIDGE_logError
+    #endif
+
+    #ifndef logWarn // added by frank26080115
+    #define logWarn CONSOLE_BRIDGE_logWarn
+    #endif
+
+    namespace tf2
+    {
+
+    ...
+
+    rest of the code
+```
+
 22:10 reinitiated: building catkin workspace (ABORTED AT ERROR)
-    ```bash
+
+```bash
     cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
 
 ```
@@ -903,7 +930,7 @@ install from source because above commands don't work anymore (Tutorial on insta
 ```
 
 Also, ros-kinetic-ros-controllers, ros-kinetic-transmission-interface, ros-kinetic-joint-limits-interface, ros-kinetic-combined-robot-hw
-    NOT WORKING! Each of the packages prevents catkin_make from finishing and returns various errors.
+    NOT WORKING! Each of the packages prevents `catkin_make`from finishing and returns various errors.
 install ros_control
 
 ```bash
@@ -1131,63 +1158,85 @@ to solve the above ERROR
             Depends: libsimbody-dev but it is not going to be installed
             Depends: libgazebo7 (= 7.0.0+dfsg-2osrf1~jessie1) but it is not going to be installed
             Depends: gazebo7-plugin-base (= 7.0.0+dfsg-2osrf1~jessie1) but it is not going to be installed
-        SOLVED WITH FOLLOWING (Uses Aplitude which offers you a solution to your dependencies): 
-            sudo aptitude install gazebo7
+```
+
+SOLVED WITH FOLLOWING (Uses Aplitude which offers you a solution to your dependencies):
+
+```bash
+    sudo aptitude install gazebo7
     source ~/catkin_ws/devel/setup.bash
     catkin_make --only-pkg-with-deps perception-pcl
+```
+
+```bash
     catkin_make --only-pkg-with-deps geometry2
-        returns errors "No package 'bullet' found". solved with following: 
-            sudo apt-get install libbullet-dev
-            catkin_make --only-pkg-with-deps tf2_bullet
-        returns errors with tf2 and "geometry2/tf2/CMakeFiles/tf2.dir/src/buffer_core.cpp.o". SOLVED WITH FOLLOWING (cite https://eleccelerator.com/wiki/index.php?title=Raspbian_Buster_ROS_RealSense#Problem:_logWarn_or_logError_not_declared_in_scope This is another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError):
-            sudo nano ~/catkin_ws/src/geometry2/tf2/src/buffer_core.cpp
-            '''
-            #include "tf2/buffer_core.h"
-            #include "tf2/time_cache.h"
-            #include "tf2/exceptions.h"
-            #include "tf2_msgs/TF2Error.h"
+```
 
-            #include <assert.h>
-            #include <console_bridge/console.h>
-            #include "tf2/LinearMath/Transform.h"
-            #include <boost/foreach.hpp>
+returns further errors "No package 'bullet' found". solved with following:
 
-            #ifndef logError // added by frank26080115
-            #define logError CONSOLE_BRIDGE_logError
-            #endif
+```bash
+    sudo apt-get install libbullet-dev
+    catkin_make --only-pkg-with-deps tf2_bullet
+```
 
-            #ifndef logWarn // added by frank26080115
-            #define logWarn CONSOLE_BRIDGE_logWarn
-            #endif
+returns errors with tf2 and "geometry2/tf2/CMakeFiles/tf2.dir/src/buffer_core.cpp.o". SOLVED WITH FOLLOWING (cite <https://eleccelerator.com/wiki/index.php?title=Raspbian_Buster_ROS_RealSense#Problem:_logWarn_or_logError_not_declared_in_scope> This is another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError):
+
+```bash
+    sudo nano ~/catkin_ws/src/geometry2/tf2/src/buffer_core.cpp
+```
+
+```
+    #include "tf2/buffer_core.h"
+    #include "tf2/time_cache.h"
+    #include "tf2/exceptions.h"
+    #include "tf2_msgs/TF2Error.h"
+
+    #include <assert.h>
+    #include <console_bridge/console.h>
+    #include "tf2/LinearMath/Transform.h"
+    #include <boost/foreach.hpp>
+
+    #ifndef logError // added by frank26080115
+    #define logError CONSOLE_BRIDGE_logError
+    #endif
+
+    #ifndef logWarn // added by frank26080115
+    #define logWarn CONSOLE_BRIDGE_logWarn
+    #endif
 
 
-            namespace tf2
-            {
+    namespace tf2
+    {
 
-            ...
+    ...
 
-            rest of the code
+    rest of the code
+```
 
-            '''
-
+```bash
     catkin_make --only-pkg-with-deps urdf_geometry_parser
     catkin_make --only-pkg-with-deps geographic_info
     catkin_make --only-pkg-with-deps xacron
     catkin_make --only-pkg-with-deps unique_identifier
     catkin_make --only-pkg-with-deps geodesy
-        ERROR: 
-        SOLVED WITH: 
-            cd ~/catkin_ws/src/perception_pcl
-            git clone -b indigo-devel https://github.com/ros-perception/pcl_conversions.git
-            git clone -b indigo-devel https://github.com/ros-perception/pcl_msgs.git
-            wstool update -j4 -t src
-            wstool update
-            cd ~/catkin_ws
-            rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
-            rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
-            source ~/catkin_ws/devel/setup.bash
-            catkin_make --only-pkg-with-deps pcl_conversions
-            catkin_make --only-pkg-with-deps pcl_msgs
+        ERROR
+```
+
+SOLVED WITH:
+
+```bash
+    cd ~/catkin_ws/src/perception_pcl
+    git clone -b indigo-devel https://github.com/ros-perception/pcl_conversions.git
+    git clone -b indigo-devel https://github.com/ros-perception/pcl_msgs.git
+    wstool update -j4 -t src
+    wstool update
+    cd ~/catkin_ws
+    rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
+    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+    source ~/catkin_ws/devel/setup.bash
+    catkin_make --only-pkg-with-deps pcl_conversions
+    catkin_make --only-pkg-with-deps pcl_msgs
+
 ```
 
 Solving unavailable dependencies: Compilation of collada_urdf will fail per <http://answers.ros.org/question/48084/urdf_to_collada-undefined-reference-to-vtable-for-assimpiosystem/>
@@ -1303,14 +1352,14 @@ Problem: No video feed on mac QGC (downloaded from QGC website) SOLVED
 
 goals:
 
-1. catkin_make successful build
+1. `catkin_make`successful build
 2. dvl ros successful run
 3. get dvl ros message
 4. interpret dvl ros message
 5. dvl position hold
 6. finish ppt script
 
-ERROR catkin_make returns errors: missing gazeboConfig.CMake
+ERROR `catkin_make`returns errors: missing gazeboConfig.CMake
 solved!!!added repos:
 
 ```bash
@@ -1353,7 +1402,7 @@ git push
 
 ## 31-05-2021
 
-### Error: When catkin_make freezes the pi
+### Error: When `catkin_make`freezes the pi
 
     Recover by: ctrl+c
     Potential solution, try again using 
@@ -1591,7 +1640,7 @@ Notes on X (XInputMode):
     # "List of ';' separated packages to build"
 
 ```bash
-    catkin_make -DCATKIN_BLACKLIST_PACKAGES="foo;bar"
+    `catkin_make`-DCATKIN_BLACKLIST_PACKAGES="foo;bar"
 ```
 
 ---
@@ -1604,7 +1653,7 @@ Notes on X (XInputMode):
 
 ## Status as of 26-05-2021 15:11
 
-    Current status of the companion pi: the currently installed version is ros-kinetic_comms-wet, a bare bone installation with basic communication functions. The active workspace is catkin_ws. catkin_make returns no error in its current state. A disk mirror of /home/pi has been made on 26-05-2021 15:11.
+    Current status of the companion pi: the currently installed version is ros-kinetic_comms-wet, a bare bone installation with basic communication functions. The active workspace is catkin_ws. `catkin_make`returns no error in its current state. A disk mirror of /home/pi has been made on 26-05-2021 15:11.
     Also a note on installing packages, Debian Jessie is End-of-Life and build farm support has been turned off, so apt-get commands won't work on the companion pi and all ros packages need to be installed from source (awful lot of work). 
     The currently installed 108 packages are: 
         -- ~~  - genmsg
