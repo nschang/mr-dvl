@@ -463,6 +463,7 @@ Easiest solution: get everything to work on the first pi. However, a reason for 
 ## 22-05-2021
 
 12:30 entered Duckietown
+
 13:00 powered on.
 
 ```bash
@@ -579,7 +580,9 @@ deb-src <http://security.debian.org/> jessie/updates main contrib non-free
 ```
 
 ROS delete package:
+
 For removing packages: Just delete them (and rebuild). They'll be gone.
+
 For removing a workspace: Just delete it (there are no other traces).
 
 ```bash
@@ -717,7 +720,6 @@ Goals
 - FIRST: install ROS workspace
 - SECOND: install DVL to output ROS message <https://github.com/waterlinked/dv-a50-ros-driver>
 
-run ROS
 changed first line of publisher.py to .../python2
 
 22:28 traversing 211 packages in topological order
@@ -1055,10 +1057,15 @@ freeing up space on companion pi by deleting legacy ROS workspace (backed up)
 ```
 
 Also, about [which build/make tool is the best](<https://answers.ros.org/question/320613/catkin_make-vs-catkin_make_isolated-which-is-preferred/>)
+
 > `catkin_make` was the first script around to build catkin workspace and is therefore used in many tutorials. It has several down sides (requiring non-standard logic in packages to declared cross-package target dependencies) and limitation (can't process plain CMake packages, requires all targets across all packages in a workspace to be unique). Therefore I wouldn't recommend to use it.
+
 > catkin_make_isolated is the script which was developed next which addresses all these shortcomings. It comes at the cost of being slower since it processes all packages sequentially. It is being used on build.ros.org in the devel and PR jobs. I would recommend using this if you want the most reliable solution (exclusively for ROS 1).
+
 > catkin_tools (called catkin build above) is similar to catkin_make_isolated but addresses the performance limitation by processing packages in parallel where possible. It also has a lot of usability features which makes it much easier to use and configure. On the downside this tool is not being actively maintained for the past years so I wouldn't recommend it either.
+
 > colcon is the new build tool developed for ROS 2 and works similar to catkin_tools with less usability features at the moment but being able to build any kind of packages (catkin, ament, CMake, Python setuptools, gradle, bazel, cargo, ...) on all major platforms (Linux, macOS, Windows). While developed for ROS 2 it in principle also works for ROS 1. If you are willing to use something more bleeding edge (which might come with quirks which haven't been resolved / polished yet) this might be an option. The big advantage is that the tool is very modular and actively developed and extended by multiple parties.
+
 Good resource: [catkin-tools](https://catkin-tools.readthedocs.io/en/latest.html)
 
 The command history until 02:00 26 May 2021 is saved with the following command, at the external backup SD Card named backup_companion
@@ -1079,7 +1086,7 @@ creating a backup
     $ sudo rsync -av --delete /home/pi /backup_companion/home/pi
 ```
 
-#### rosrun encountered error: WARNING: ROS_MASTER_URI [http://danter-eth:11311/] host is not set to this machine. solved with following command
+rosrun encountered error: WARNING: `ROS_MASTER_URI` [http://danter-eth:11311/] host is not set to this machine. solved with following command
 
 ```bash
     $ export ROS_MASTER_URI=https://localhost:11311
@@ -1087,13 +1094,13 @@ creating a backup
         errors encountered: missing package from ros_controls. Solved with following command.
 ```
 
-weirdly, it prompts rosdep is not installed. re-installing
+weirdly, it prompts `rosdep` is not installed. re-installing
 
 ```bash
     $ sudo apt-get install python-rosdep
 ```
 
-install package: ros_controls
+install package: `ros_controls`
 
 ```bash
     $ wstool init
@@ -1105,7 +1112,7 @@ install package: ros_controls
     $ catkin_make --only-pkg-with-deps ros_control
 ```
 
-install package: urdf
+install package: `urdf`
 
 ```bash
     $ cd ~/catkin_ws/src
@@ -1124,7 +1131,7 @@ switch to build everything
     # returns errors.
 ```
 
-install four_wheel_control_msgs
+install `four_wheel_control_msgs`
 
 ```bash
     $ cd ~/catkin_ws/src
@@ -1150,8 +1157,8 @@ install tf
     $ catkin_make --only-pkg-with-deps geometry
 ```
 
-install `tf` returns error: `tf2_rosConfig.cmake`, `tf2_ros-config.cmake` NOT FOUND.
-Solved with
+install `tf` returns error: `tf2_rosConfig.cmake`, `tf2_ros-config.cmake` NOT FOUND. 
+Solved with:
 
 ```bash
     $ d ~/catkin_ws
@@ -1331,17 +1338,20 @@ Goal of 20210527: `catkin_make` no errors
 ## 27-05-2021
 
 10:00 meet alex to assemble robot
+
 11:00 move robot to ocean lab for a swim. Take with: Robot, Joystick, Battery, Connection, GoPro,
+
 ---TESTING IN OCEAN LAB---
+
 12:34 start output json file to `out1.txt`
 
 did not work out!
 
 Workflow of position hold test:
-    1. go to <http://192.168.2.2:2770/waterlinked>
-    2. the `Status` field in the Waterlinked page should read Running....
-    3. QGC will announce `EKF3 IMU0 STARTED RELATIVE AIDING` and then `EKF3 IMU0 FUSING ODOMETRY` (This means the DVL input is being fused.)
-    4. In QGC, switch to `POSHOLD` mode
+1. go to <http://192.168.2.2:2770/waterlinked>
+2. the `Status` field in the Waterlinked page should read Running....
+3. QGC will announce `EKF3 IMU0 STARTED RELATIVE AIDING` and then `EKF3 IMU0 FUSING ODOMETRY` (This means the DVL input is being fused.)
+4. In QGC, switch to `POSHOLD` mode
 
 ---
 ## 28-05-2021
@@ -1350,6 +1360,7 @@ Problem: No video feed on mac QGC (downloaded from QGC website) SOLVED
     Solved by replacing current version with the QGC provided by BlueRobotics <https://docs.bluerobotics.com/downloads/#ardusub-firmware-files>
 
 20:00 entered Ocean Lab for testing
+
 21:00 out of disk space! (13.95 out of 14) use `ncdu` to make room
 
 ```bash
@@ -1365,14 +1376,15 @@ Problem: No video feed on mac QGC (downloaded from QGC website) SOLVED
 
 goals:
 
-1. `catkin_make`successful build
+1. `catkin_make` troubleshooting
 2. dvl ros successful run
 3. get dvl ros message
 4. interpret dvl ros message
 5. dvl position hold
 
 ERROR `catkin_make`returns errors: missing `gazeboConfig.CMake`
-solved! added repos:
+
+SOLVED. added repos:
 
 ```bash
     $ sudo nano /etc/apt/sources.list
@@ -1394,7 +1406,7 @@ solved! added repos:
     $ catkin_make --only-pkg-with-deps waterlinked-a50-ros-driver
 ```
 
-solving NO_PUBKEY during apt-get update
+solving `NO_PUBKEY` during `apt-get update`
 
 ```bash
     $ gpg --recv-keys AA8E81B4331F7F50
@@ -1411,8 +1423,9 @@ solving NO_PUBKEY during apt-get update
 
 ### Error: When `catkin_make`freezes the pi
 
-Recover by: ctrl+c
-Potential solution, try again using
+Recover by: `ctrl+c`
+
+Potential solution, try again using:
 
 ```bash
     $ catkin_make -j1 #single-thread compilation
@@ -1471,8 +1484,7 @@ then go to line 64
 [reason behind](https://stackoverflow.com/questions/30131032/compile-opencv-with-tbb-on-raspberry-pi-2)
 > The alternative for using dmb is to call the Linux kernel __kuser_memory_barrier. The__kuser_memory_barrier helper operation is found in all ARM kernels 2.6.15 and later and provide a way to issue a memory barrier that will work across all ARM arch.__kuser_memory_barrier helper function found at address 0xffff0fa0
 
-- ERROR: 
-    `QGC: Missing params: 1:COMPASS_PRIMARY`
+- ERROR: `QGC: Missing params: 1:COMPASS_PRIMARY`
   - Versions:
     QGC Version: downloaded from BlueROV page. Recommended.
     ArduSub version: `4.1.0 (beta)`
@@ -1482,6 +1494,8 @@ then go to line 64
 
 ---
 ## 01-06-2021
+
+working on reading ROS msgs from DVL. 
 
 ```bash
     $ roscore
@@ -1496,7 +1510,7 @@ then go to line 64
             * /dvl/data [waterlinked_a50_ros_driver/DVL] 1 subscriber
 ```
 
-how to publish ros message in terminal:
+### How to publish ros message in terminal:
 
 ```bash
     $ rosmsg show waterlinked_a50_ros_driver/DVL
@@ -1534,8 +1548,8 @@ how to publish ros message in terminal:
     $ catkin_make
 ```
 
-Replace "<package-name>" with the name of desired package (including the brackets!). It may be a subpackage so search for it first:
-go to \<http://wiki.ros.org/>><package-name>?distro=kinetic\
+Replace "<package-name>" with the name of desired package (including the brackets). 
+It may be a subpackage so search for it first on [ROS Wiki](wiki.ros.org).
 
 ```bash
     $ cd ~/catkin_ws/src
@@ -1545,7 +1559,7 @@ go to \<http://wiki.ros.org/>><package-name>?distro=kinetic\
     $ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie #Alternative: rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
 ```
 
-### installation with wstool
+### Installation with wstool
 
 ```bash
     $ cd ~/gilbreth_ws/src
@@ -1592,7 +1606,7 @@ content of an example .rosinstall file (gilbreth.rosinstall):
             /: backup root directory
 ```
 
-### to restore the backup
+### also to restore the backup
 
 ```bash
     $ sudo mount /dev/sdb1 /media/usb
@@ -1604,7 +1618,7 @@ Successful backup at 18:30 01-06-2021.
 
 ## 02-06-2021
 
-- problem with joystick
+- ERROR: problem with joystick
   - problem one: unable to control camera after a few working commands (camera stops moving or turning up/down erratically that only stopped when powered off)
   - problem two: QGC does not recognize joystick in X mode. (Newton SeaGripper Wiki recommends to use X mode). Does it matter?
   - Solved by: Changing Joystick button assignment: Go to Vehicle setting -> Joystick -> Button Assignment
@@ -1643,8 +1657,6 @@ Notes on X (XInputMode):
 ## Status as of 29-05-2021 16:00
 
 `catkin_make` succeeds without errors.
-
----
 
 ## Status as of 26-05-2021 15:11
 
