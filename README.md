@@ -1,11 +1,11 @@
-# WaterLinked DVL A50 - BlueROV2 Integration
+# WaterLinked DVL A50 Integration
 
 ## Content: 
 The file 'dvl-history.md' is the main working doc.
 
-- dvl-a50-data: 
-- dvl-a50-ros: ROS-related setup for dvl-a50
-- Communication Protocol
+- dvl-a50-data: contains DVL output in various settings of vehicle (json format only)
+- dvl-a50-ros: ROS-related setup and output of dvl-a50
+- Communication Protocol: Settings for communication with DVL
 
 for Hardware integration, as well as other introductory content, please refer to [Wiki](https://github.com/nschang/mr-dvl/wiki) of this repo.
 
