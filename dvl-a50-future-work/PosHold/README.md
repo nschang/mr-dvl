@@ -6,5 +6,19 @@ ArduPilot has a series of libraries available for non-GPS navigation. The two li
 
 The Nortek DVL was tested for position hold using this [python code](https://github.com/Williangalvani/ardupilot/blob/e1d009555e7cadaf69c1d901e5b5ef5fc4b5c3ca/nortekdvl.py), written by the Blue Robotics software team to convert the position sentences from the DVL into the `VISION_POSITION_DELTA` messages that could be interpreted by the ArduSub firmware. 
 
+**[VISION_POSITION_DELTA](https://mavlink.io/en/messages/ardupilotmega.html#VISION_POSITION_DELTA)**
+
+|    Field Name   |   Type   | Units |                                                            Description                                                           |
+|:---------------:|:--------:|:-----:|:--------------------------------------------------------------------------------------------------------------------------------:|
+| time_usec       | uint64_t | us    | Timestamp (synced to UNIX time or since system boot).                                                                            |
+| time_delta_usec | uint64_t | us    | Time since the last reported camera frame.                                                                                       |
+| angle_delta     | float[3] | rad   | Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.             |
+| position_delta  | float[3] | m     | Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD. |
+| confidence      | float    | %     | Normalised confidence value from 0 to 100.                                                                                       |
+
 ***Useful Links***
-[SITL Software in the Loop](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html#sitl-simulator-software-in-the-loop)
+
+[SITL Software in the Loop Simulator](https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html#sitl-simulator-software-in-the-loop)
+[BlueROV Forum: Setting up a simulation environment](https://discuss.bluerobotics.com/t/setting-up-a-simulation-environment/2892)
+
+[ArduPilot Drone Setup for Non-GPS Navigation](https://ardupilot.org/copter/docs/common-zed.html) probably unrelated but maybe helpful.
