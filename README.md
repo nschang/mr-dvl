@@ -82,26 +82,24 @@ In companion, type:
 **To run the publisher that listens to the TCP port and sends the data to ROS**
 
 ```bash
-rosrun waterlinked_a50_ros_driver publisher.py _ip:=TCP_IP
+  rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95
 ```
-
-where TCP_IP should be replaced by the IP of the DVL. You can also display the raw DVL data in the terminal by specifying the argument "do_log_data":
+where _IP is replaced by the IP of the DVL, in our case `192.168.2.95`. You can also display the raw DVL data in the terminal by specifying the argument "do_log_data":
 
 **To run the publisher that listens to the TCP port, displays the raw data in the DVL and sends the data to ROS**
 
 ```bash
-rosrun waterlinked_a50_ros_driver publisher.py _ip:=TCP_IP _do_log_data:=true
+  rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95 _do_log_data:=true
 ```
 
 **To run a subscriber node that listens to the DVL topic.**
-
-Helpful for debugging or checking if everything is running as it should be. Choose between "subscriber_gui.py" and "subscriber.py". The GUI makes reading data visually much easier. While the non-GUI version makes it easier to read through the code to see how you can implement code yourself.
+Helpful for debugging or checking if everything is running as it should be. Choose between "subscriber_gui.py" and "subscriber.py". The non-GUI version is used here due to limitations of companion pi with commandline interface. 
 
 ```bash
-rosrun waterlinked_a50_ros_driver subscriber_gui.py
+  rosrun waterlinked_a50_ros_driver subscriber.py
 ```
 
-for more info on DVL ROS setup, go to [dvl-a50-ros](/dvl-a50-ros)
+for more info on DVL ROS setup, please go to [dvl-a50-ros](/dvl-a50-ros)
 
 ## Operation within QGC
 
