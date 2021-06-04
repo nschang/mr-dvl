@@ -34,46 +34,45 @@
 ```bash
     $ pip install crcmod pyserial
     $ git clone https://github.com/waterlinked/dvl-python.git
-    $ cd /home/ubuntu/dvl-python %%%folder with the setup.py file%%%
+    $ cd /home/ubuntu/dvl-python # folder with the setup.py file
     $ pip install -e .
     $ python
-```python
         >>>  from wldvl import WlDVL
         >>>  dvl = WlDVL("/dev/ttyUSB0")
         >>>  dvl.read()
 ```
-```
+
 15:00 begin installing ROS noetic-desktop.
 
 ```bash
-    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-    sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-    sudo apt update
-    sudo apt install ros-noetic-desktop
+    $ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+    $ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+    $ sudo apt update
+    $ sudo apt install ros-noetic-desktop
 ```
 
 15:20 ROS environment setup
 
 ```bash
-    source /opt/ros/noetic/setup.bash
-    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-    source ~/.bashrc
+    $ source /opt/ros/noetic/setup.bash
+    $ echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+    $ source ~/.bashrc
 
 ```
 
 15:30 Dependencies for building packages
 
 ```bash
-    sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
-    sudo apt install python3-rosdep
-    sudo rosdep init
-    rosdep update
+    $ sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+    $ sudo apt install python3-rosdep
+    $ sudo rosdep init
+    $ rosdep update
 ```
 
 15:40 successfully installed ROS noetic-desktop. After install:
 
 ```bash
-    df-h
+    $ df-h
         Filesystem      Size  Used Avail Use% Mounted on
         udev            406M     0  406M   0% /dev
         tmpfs            91M  4.0M   87M   5% /run
@@ -89,7 +88,7 @@
         /dev/loop5       60M   60M     0 100% /snap/lxd/20330
         /dev/mmcblk0p1  253M  120M  133M  48% /boot/firmware
         tmpfs            91M     0   91M   0% /run/user/1000
-    printenv | grep ROS
+    $ printenv | grep ROS
         ROS_VERSION=1
         ROS_PYTHON_VERSION=3
         ROS_PACKAGE_PATH=/opt/ros/noetic/share
@@ -103,28 +102,28 @@
 15:50 create ROS workspace
 
 ```bash
-    mkdir -p ~/catkin_ws/src
-    cd ~/catkin_ws/
-    catkin_make
-    source devel/setup.bash
-    echo $ROS_PACKAGE_PATH
+    $ mkdir -p ~/catkin_ws/src
+    $ cd~/catkin_ws/
+    $ catkin_make
+    $ source devel/setup.bash
+    $ echo $ROS_PACKAGE_PATH
         /home/ubuntu/catkin_ws/src:/opt/ros/noetic/share
 ```
 
 15:52 dvl ROS
 
 ```bash
-    cd ~/catkin_ws/src
-    git clone -b master <https://github.com/waterlinked/dvl-a50-ros-driver.git>
-    cd ~/catkin_ws
-    catkin_make
+    $ cd~/catkin_ws/src
+    $ git clone -b master <https://github.com/waterlinked/dvl-a50-ros-driver.git>
+    $ cd~/catkin_ws
+    $ catkin_make
 ```
 
 16:06 creating a symlink to python 3
 
 ```bash
-    sudo ln -s /usr/bin/python3 /usr/bin/python
-    sudo shutdown now
+    $ sudo ln -s /usr/bin/python3 /usr/bin/python
+    $ sudo shutdown now
 ```
 
 ## working on companion pi
@@ -137,12 +136,12 @@
 16:35 ssh into pi
 17:00 dvl is not working. trouble shooting.
 17:15 solved. dvl power cable is loose! reconnecting.
-18:00 re-installing ros-kinetic (ros-comm, as ROS wiki recommended here <https://wiki.ros.org/ROSberryPi/Installing%20ROS%20Kinetic%20on%20the%20Raspberry%20Pi>) on system.
+18:00 re-installing ros-kinetic (ros-comm, as recommended by [ROS wiki](https://wiki.ros.org/ROSberryPi/Installing%20ROS%20Kinetic%20on%20the%20Raspberry%20Pi) on system.
 
 ```bash
-    rosversion -d
+    $ rosversion -d
         kinetic
-    cat /etc/os-release
+    $ cat /etc/os-release
         PRETTY_NAME="Raspbian GNU/Linux 8 (jessie)"
         NAME="Raspbian GNU/Linux"
         VERSION_ID="8"
@@ -152,49 +151,49 @@
         HOME_URL="http://www.raspbian.org/"
         SUPPORT_URL="http://www.raspbian.org/RaspbianForums"
         BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
-    sudo sh -c 'echo "deb <http://packages.ros.org/ros/ubuntu> $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-    sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-    sudo apt-get update && sudo apt-get upgrade
-    sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
-    rosdep update
-    rosinstall_generator ros_comm --rosdistro kinetic --deps --wet-only --tar > kinetic-ros_comm-wet.rosinstall
-    wstool init src kinetic-ros_comm-wet.rosinstall
+    $ sudo sh -c 'echo "deb <http://packages.ros.org/ros/ubuntu> $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+    $ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+    $ sudo apt-get update && sudo apt-get upgrade
+    $ sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
+    $ rosdep update
+    $ rosinstall_generator ros_comm --rosdistro kinetic --deps --wet-only --tar > kinetic-ros_comm-wet.rosinstall
+    $ wstool init src kinetic-ros_comm-wet.rosinstall
 
 ```
 
 18:30 resolving unavailable dependencies
 
 ```bash
-    mkdir -p ~/ros_catkin_ws/external_src
-    cd ~/ros_catkin_ws/external_src
-    wget <http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download> -O assimp-3.1.1_no_test_models.zip
-    unzip assimp-3.1.1_no_test_models.zip
-    cd assimp-3.1.1
-    cmake .
-    make
-    sudo make install
-    cd ~/ros_catkin_ws
-    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
-    sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+    $ mkdir -p ~/ros_catkin_ws/external_src
+    $ cd~/ros_catkin_ws/external_src
+    $ wget <http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download> -O assimp-3.1.1_no_test_models.zip 
+    # unzip assimp-3.1.1_no_test_models.zip
+    $ cdassimp-3.1.1
+    $ cmake .
+    $ make
+    $ sudo make install
+    $ cd~/ros_catkin_ws
+    $ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+    $ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
 
 ```
 
 20:00 finished installation
 
 ```bash
-    mv -i kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
-    rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --tar > kinetic-desktop-full-wet.rosinstall
-    diff -u kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
-    wstool merge -t src kinetic-desktop-full-wet.rosinstall
-    wstool update -t src
-    ./src/catkin/bin/catkin_make_isolated --install
-    source ~/catkin_ws/devel/setup.bash
-    cd ~/catkin_ws
-    rosinstall_generator ros_comm ros_control joystick_drivers --rosdistro kinetic --deps --wet-only --tar > kinetic-custom_ros.rosinstall
-    wstool merge -t src kinetic-custom_ros.rosinstall
-    wstool update -t src
-    rosdep update
-    cd /catkin_ws && catkin_make
+    $ mv -i kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
+    $ rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --tar > kinetic-desktop-full-wet.rosinstall
+    $ diff -u kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
+    $ wstool merge -t src kinetic-desktop-full-wet.rosinstall
+    $ wstool update -t src
+    $ ./src/catkin/bin/catkin_make_isolated --install
+    $ source ~/catkin_ws/devel/setup.bash
+    $ cd~/catkin_ws
+    $ rosinstall_generator ros_comm ros_control joystick_drivers --rosdistro kinetic --deps --wet-only --tar > kinetic-custom_ros.rosinstall
+    $ wstool merge -t src kinetic-custom_ros.rosinstall
+    $ wstool update -t src
+    $ rosdep update
+    $ cd/catkin_ws && catkin_make
 
 ```
 
@@ -245,18 +244,17 @@ Invoking "make cmake_check_build_system" failed
 10:00 try to install ROS kinetic-desktop-full. Reason for re-install: `catkin_make`bluerov package returns Cmake error, missing two packages: "geometry_msgsConfig.cmake" and "geometry_msgs-config.cmake" which are both included in the desktop_full install.
 
 ```bash
-    sudo sh -c 'echo "deb <http://packages.ros.org/ros/ubuntu> $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-    sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-    sudo apt-get update && sudo apt-get upgrade
-    sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
-    rosdep update
-
-    cmake "-DCMAKE_CXX_FLAGS=- stdlib=libc++" /path/to/rtags
-    -- Performing Test HAVE_CXX_WNO_INCONSISTENT_MISSING_OVERRIDE - Failed
-    -- Performing Test HAVE_CXX_WNO_UNUSED_CONST_VARIABLE - Failed
-    -- Performing Test HAVE_CXX_WNO_SHORTEN_64_TO_32 - Failed
-    -- Performing Test HAVE_CXX_WNO_TAUTOLOGICAL_UNDEFINED_COMPARE - Failed
-    -- Performing Test HAVE_CXX_WNO_MISSING_PROTOTYPES - Failed
+    $ sudo sh -c 'echo "deb <http://packages.ros.org/ros/ubuntu> $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+    $ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+    $ sudo apt-get update && sudo apt-get upgrade
+    $ sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
+    $ rosdep update
+        cmake "-DCMAKE_CXX_FLAGS=- stdlib=libc++" /path/to/rtags
+        -- Performing Test HAVE_CXX_WNO_INCONSISTENT_MISSING_OVERRIDE - Failed
+        -- Performing Test HAVE_CXX_WNO_UNUSED_CONST_VARIABLE - Failed
+        -- Performing Test HAVE_CXX_WNO_SHORTEN_64_TO_32 - Failed
+        -- Performing Test HAVE_CXX_WNO_TAUTOLOGICAL_UNDEFINED_COMPARE - Failed
+        -- Performing Test HAVE_CXX_WNO_MISSING_PROTOTYPES - Failed
 ```
 
 16:00 uninstalled Python 3
@@ -264,7 +262,7 @@ Invoking "make cmake_check_build_system" failed
 18:00 initiated: building catkin workspace (LONG PROCESS > 3h) ABORTED AT ERROR
 
 ```bash
-    cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+    $ cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
 ```
 
 22:00 solving tf2 error (SOLVED)
@@ -277,13 +275,13 @@ Invoking "make cmake_check_build_system" failed
         ==> cd /home/pi/catkin_ws/build_isolated/tf2 && /opt/ros/kinetic/env.sh make -j4 -l4
 ```
 
-%%%seems to be another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError. Fixed with following command%%%
+seems to be another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError. Fixed with following command:
 
 ```bash
-cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
+$ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
 ```
 
-%%%original%%%
+- original
 
 ```bash
     #include "tf2/buffer_core.h"
@@ -304,9 +302,7 @@ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j
     rest of the code
 ```
 
-%%%updated%%%
-            %%%updated%%%
-%%%updated%%%
+- updated
 
 ```bash
     #include "tf2/buffer_core.h"
@@ -338,7 +334,7 @@ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j
 22:10 reinitiated: building catkin workspace (ABORTED AT ERROR)
 
 ```bash
-    cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+    cd~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
 
 ```
 
@@ -348,12 +344,16 @@ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j
         GRUB_CMDLINE_LINUX_DEFAULT="text"
         GRUB_TERMINAL=console
     save changes, then run:
-        sudo update-grub
-        sudo systemctl enable multi-user.target --force
-        sudo systemctl set-default multi-user.target
-    To undo sudo systemctl set-default multi-user.target simply type:
-        sudo systemctl enable graphical.target --force
-        sudo systemctl set-default graphical.target
+
+```bash
+    sudo update-grub
+    sudo systemctl enable multi-user.target --force
+    sudo systemctl set-default multi-user.target
+```
+
+    To undo `sudo systemctl set-default multi-user.target` simply type:
+    $ sudo systemctl enable graphical.target --force
+    $ sudo systemctl set-default graphical.target
 
 ---working on Qground Control---
 
@@ -378,7 +378,7 @@ change parameters/PID in QGroundControl:
         EK3_ENABLE 1
         VISO_TYPE 1
         EK3_GPS_TYPE 3
-        PSC_POSXY_P 2.5 %%%ERROR! QGC shows max 2.0?? force changed%%%
+        PSC_POSXY_P 2.5 # ERROR! QGC shows max 2.0?? force changed
         PSC_POSZ_P 1.0
         PSC_VELXY_D 0.8
         PSC_VELXY_I 0.5
@@ -387,7 +387,7 @@ change parameters/PID in QGroundControl:
 The command history until 00:00 22 May 2021 is saved with the following command, at the external backup SD Card named backup_companion
 
 ```bash
-    cd /backup_companion
+    $ cd/backup_companion
     history > history_for_print.txt
 ```
 
@@ -446,9 +446,9 @@ Easiest solution: get everything to work on the first pi. However, a reason for 
     // install missing package from source
 
 ```bash
-    cd ~/catkin_ws/src
+    $ cd~/catkin_ws/src
     git clone <https://github.com/ros-geographic-info/geographic_info.git>
-    cd ~/catkin_ws
+    $ cd~/catkin_ws
     rosdep install --from-paths src/ --ignore-src --rosdistro kinetic
         // however encountered error:
         ERROR: the following packages/stacks could not have their rosdep keys resolved to system dependencies:
@@ -464,16 +464,15 @@ Easiest solution: get everything to work on the first pi. However, a reason for 
 18:50 Installing Python 3.6 on Raspbian, following this guide <https://gist.github.com/dschep/24aa61672a2092246eaca2824400d37f>
 
 ```bash
-    sudo apt-get update
-    sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
+    $ sudo apt-get update
+    $ sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
     wget <https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz>
     tar xf Python-3.6.5.tar.xz
-    cd Python-3.6.5
+    $ cdPython-3.6.5
     ./configure
-    make -j 4
-        %%%takes about 15 minutes (it produces 8 warnings to the stderr)%%%
-    sudo make altinstall
-        %%%takes about 2 minutes%%%
+    make -j 4 # takes about 15 minutes (it produces 8 warnings to `stderr`)
+    $ sudo make altinstall
+    takes about 2 minutes
     wget <https://bootstrap.pypa.io/get-pip.py>
     python3.6 ./get-pip.py
     export $PATH
@@ -525,7 +524,7 @@ Check system requirements, per <https://www.ros.org/reps/rep-0003.html#kinetic-k
 12:38
 
 ```bash
-    cd catkin_ws
+    $ cdcatkin_ws
     wstool merge kinetic-ros_comm-wet.rosinstall -t src
     wstool update -j 4 -t src
 ```
@@ -570,11 +569,11 @@ ERROR:
 ```
 
 Reason:
-    It's likely you ran catkin_make_isolated as root at some point (using sudo). Seeing as you now attempt to run it as a regular user, you get permission errors, as you are not allowed to access the files and/or directories owned by root.
+    It's likely you ran catkin_make_isolated as root at some point (using `sudo`). Seeing as you now attempt to run it as a regular user, you get permission errors, as you are not allowed to access the files and/or directories owned by root.
 fixed issue:
 
 ```bash
-    sudo chown $USER: -R /home/pi/ros_catkin_ws
+    $ sudo chown $USER: -R /home/pi/ros_catkin_ws
     which will make $USER the owner of all the files in the workspace again.
 ```
 
@@ -586,104 +585,107 @@ To make sure your workspace is properly overlayed by the setup script, make sure
 ```
 
 ROS Kinetic installation guide:
-        sudo sh -c 'echo "deb <http://packages.ros.org/ros/ubuntu> $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+```bash
+        $ sudo sh -c 'echo "deb <http://packages.ros.org/ros/ubuntu> $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
         wget <http://packages.ros.org/ros.key> -O - | sudo apt-key add -
-        sudo apt-get update
-    NO LONGER WORK! NEED TO INSTALL FROM SOURCE.
-        sudo apt-get install ros-kinetic-desktop-full
-        sudo rosdep init
+        $ sudo apt-get update
+        # NO LONGER WORK! NEED TO INSTALL FROM SOURCE.
+        $ sudo apt-get install ros-kinetic-desktop-full
+        $ sudo rosdep init
         rosdep update
-    Step 8: Setting up the ROS environment variables
+        # Step 8: Setting up the ROS environment variables
         echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
         source ~/.bashrc
-    Step 9: Create and initialize the catkin workspace
+        # Step 9: Create and initialize the catkin workspace
         mkdir -p ~/catkin_ws/src
-        cd catkin_ws/src
+        $ cdcatkin_ws/src
         catkin_init_workspace
-        cd ~/catkin_ws/
+        $ cd~/catkin_ws/
         catkin_make
-    Step 10: Add the catkin_workspace to your ROS environment
+        # Step 10: Add the catkin_workspace to your ROS environment
         source ~/catkin_ws/devel/setup.bash
         echo “source ~/catkin_workspace/devel/setup.bash” >> ~/.bashrc
-    Step 11: Check the ROS environment variables
+        # Step 11: Check the ROS environment variables
         export | grep ROS
-    Step 12: Check ROS installation
+        # Step 12: Check ROS installation
         roscore
         rosrun turtlesim turtlesim_node
+```
 
 BlueROV Simulation
-    <https://gist.github.com/monabf/bc04b7ab366f812c645bf0aa6f22c8de>
-    <https://risc.readthedocs.io/4-marine-2.html>
 
-<https://robots.ros.org/bluerov/>
+- [Tutorial on how to set up Gazebo simulations of the BlueROV2 using SITL and ArduSub, and a package for use with mavros](https://gist.github.com/monabf/bc04b7ab366f812c645bf0aa6f22c8de)
+- [How to start bluerov simulator](https://risc.readthedocs.io/4-marine-2.html)
+- [ROS for BlueROV](https://robots.ros.org/bluerov/)
 
-14:30 rm -rf *isolated
+14:30 `rm -rf *isolated`
 
 Instructions to install from source for ROS Kinetic on Debian Jessie:
 
 ```bash
-    mkdir -p ~/ros_catkin_ws/external_src
-    cd ~/ros_catkin_ws/external_src
-    wget <http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download> -O assimp-3.1.1_no_test_models.zip
-    unzip assimp-3.1.1_no_test_models.zip
-    cd assimp-3.1.1
-    cmake .
-    make -j2
-    sudo make install -j2
+    $ mkdir -p ~/ros_catkin_ws/external_src
+    $ cd ~/ros_catkin_ws/external_src
+    $ wget <http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download> -O assimp-3.1.1_no_test_models.zip
+    $ unzip assimp-3.1.1_no_test_models.zip
+    $ cd assimp-3.1.1
+    $ cmake .
+    $ make -j2
+    $ sudo make install -j2
 ```
 
 How to install ROS Package from git:
 
 ```bash
-    cd ~/catkin_ws/src
-    git clone -b <branch> <address>
-    cd ~/catkin_ws
-    catkin_make
+    $ cd ~/catkin_ws/src
+    $ git clone -b <branch> <address>
+    $ cd ~/catkin_ws
+    $ catkin_make
 ```
 
 Resolve Dependency:
 
 ```bash
-    cd ~/catkin_ws
-    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+    $ cd ~/catkin_ws
+    $ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
 ```
 
 Build Catkin Workspace:
 
 ```bash
-    cd ~/catkin_ws
-    catkin build --dry-run    # Show the package build order
-    sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2
-    source /opt/ros/kinetic/setup.bash
-    echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+    $ cd ~/catkin_ws
+    $ catkin build --dry-run    # Show the package build order
+    $ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2
+    $ source /opt/ros/kinetic/setup.bash
+    $ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 ```
 
 When building speficic packages:
 
 ```bash
-    cd /catkin_ws
-    catkin build dvl-a50-ros-driver        # Build dvl-a50-ros-driver and its dependencies
+    $ cd /catkin_ws
+    $ catkin build dvl-a50-ros-driver        # Build dvl-a50-ros-driver and its dependencies
 ```
 
 Repair:
 
 ```bash
-    apt-get install -f
-    sudo apt-get -f install
+    $ apt-get install -f
+    $ sudo apt-get -f install
 ```
 
 Maintenance
 
 ```bash
-    sudo apt-get update ; sudo apt-get upgrade
-    sudo apt-get clean ; sudo apt-get autoclean ; sudo apt-get autoremove
+    $ sudo apt-get update ; sudo apt-get upgrade
+    $ sudo apt-get clean ; sudo apt-get autoclean ; sudo apt-get autoremove
 ```
 
 Workspace Maintenance:
 
 ```bash
     # Cleaning Products from Missing Packages
-    catkin clean --orphans
+    $ catkin clean --orphans
 ```
 
 TASKS
@@ -691,7 +693,7 @@ TASKS
 - FIRST: install ROS workspace
 - SECOND: install DVL to output ROS message <https://github.com/waterlinked/dv-a50-ros-driver>
 
-run ros
+run ROS
 changed first line of publisher.py to .../python2
 
 22:28 traversing 211 packages in topological order
@@ -937,7 +939,7 @@ sudo apt-get install -y ros-kinetic-image-common ros-kinetic-robot-state-publish
 install from source because above commands don't work anymore (Tutorial on installing ROS packages from source <http://wiki.ros.org/qb_hand/Tutorials/ROS%20Packages%20Installation>)
 
 ```bash
-    sudo gpasswd -a pi dialout
+    $ sudo gpasswd -a pi dialout
     cd ~/catkin_ws/src
     wstool init
     git clone --branch hydro-devel https://github.com/ros-perception/image_common.git
@@ -1042,7 +1044,7 @@ The command history until 02:00 26 May 2021 is saved with the following command,
 
 ```bash
     cd /backup_companion
-    sudo history > history_for_print.txt
+    $ sudo history > history_for_print.txt
 ```
 
 ---END OF DAY 20210525---
@@ -1168,7 +1170,7 @@ to solve the above ERROR
     rosdep install --from-paths . --ignore-src --rosdistro kinetic -y
     rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
         ERROR (non-fatal): 
-            "sudo -H apt-get install -y libgazebo7-dev" failed with missing dependencies: libgazebo7-dev : 
+            `sudo -H apt-get install -y libgazebo7-dev` failed with missing dependencies: libgazebo7-dev : 
             Depends: libtbb-dev but it is not installable
             Depends: libsimbody-dev but it is not going to be installed
             Depends: libgazebo7 (= 7.0.0+dfsg-2osrf1~jessie1) but it is not going to be installed
@@ -1178,7 +1180,7 @@ to solve the above ERROR
 SOLVED WITH FOLLOWING (Uses Aplitude which offers you a solution to your dependencies):
 
 ```bash
-    sudo aptitude install gazebo7
+    $ sudo aptitude install gazebo7
     source ~/catkin_ws/devel/setup.bash
     catkin_make --only-pkg-with-deps perception-pcl
 ```
@@ -1190,7 +1192,7 @@ SOLVED WITH FOLLOWING (Uses Aplitude which offers you a solution to your depende
 returns further errors "No package 'bullet' found". solved with following:
 
 ```bash
-    sudo apt-get install libbullet-dev
+    $ sudo apt-get install libbullet-dev
     catkin_make --only-pkg-with-deps tf2_bullet
 ```
 
@@ -1264,7 +1266,7 @@ Solving unavailable dependencies: Compilation of collada_urdf will fail per <htt
     cd assimp-3.1.1
     cmake .
     make
-    sudo make install
+    $ sudo make install
 ```
 
 Resolving Dependencies (maintenance, why not?)
@@ -1289,7 +1291,7 @@ set up tf
     catkin_create_pkg robot_setup_tf roscpp tf geometry_msgs
     catkin_make --only-pkg-with-deps four_wheel_steering_controller
 
-sudo apt-get install -y ros-kinetic-ros-control
+$ sudo apt-get install -y ros-kinetic-ros-control
     ros-kinetic-ros-controllers
     ros-kinetic-gazebo-ros-pkgs
     ros-kinetic-gazebo-ros-control
@@ -1320,7 +1322,7 @@ The command history until 23:00 26 May 2021 is saved with the following command,
 
 ```bash
     cd /backup_companion
-    sudo -i
+    $ sudo -i
     history > history_for_print_20200526.txt
     shutdown now
 ```
@@ -1355,14 +1357,14 @@ Problem: No video feed on mac QGC (downloaded from QGC website) SOLVED
 21:00 out of disk space! (13.95 out of 14) use ncdu to make room
 
 ```bash
-    sudo ncdu -rx / # check large files
+    $ sudo ncdu -rx / # check large files
     lsblk
-    sudo mkdir /media/usb
-    sudo mount /dev/sdb1 /media/usb # mount back up disk
-    sudo find /tmp -type f -atime +10 -delete # deletes tmp files older than 10 days
-    sudo rsync -av /backup_companion /media/usb
+    $ sudo mkdir /media/usb
+    $ sudo mount /dev/sdb1 /media/usb # mount back up disk
+    $ sudo find /tmp -type f -atime +10 -delete # deletes tmp files older than 10 days
+    $ sudo rsync -av /backup_companion /media/usb
     rm -rf /backup_companion # do this AFTER DOUBLE CHECK COPIED FILE
-    sudo umount /media/usb # don't forget to unmount
+    $ sudo umount /media/usb # don't forget to unmount
 ```
 
 goals:
@@ -1394,9 +1396,9 @@ solved!!!added repos:
 ```
 
 ```bash
-    sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
-    sudo apt-get install libgazebo7-dev
-    sudo apt-get install ros-kinetic-gazebo7-ros-pkgs
+    $ sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
+    $ sudo apt-get install libgazebo7-dev
+    $ sudo apt-get install ros-kinetic-gazebo7-ros-pkgs
 
     catkin_make --only-pkg-with-deps waterlinked-a50-ros-driver
 ```
@@ -1408,8 +1410,8 @@ solving NO_PUBKEY during apt-get update
     gpg --export AA8E81B4331F7F50| apt-key add -
 
 wget <http://mirrordirector.raspbian.org/raspbian/pool/main/h/hdf5/hdf5-helpers_1.8.13+docs-15+deb8u1_armhf.deb>
-sudo dpkg -i hdf5-helpers_1.8.13+docs-15+deb8u1_armhf.deb
-sudo apt-get install libgazebo7-dev
+$ sudo dpkg -i hdf5-helpers_1.8.13+docs-15+deb8u1_armhf.deb
+$ sudo apt-get install libgazebo7-dev
 
 git commit -m
 git push
@@ -1594,9 +1596,9 @@ content of an example .rosinstall file (gilbreth.rosinstall):
 
 ```bash
     lsblk #check if backup disk plugged in and mountable
-    sudo mount /dev/sdb1 /media/usb
+    $ sudo mount /dev/sdb1 /media/usb
     lsblk #check if backup disk mounted correctly
-    sudo tar cvfpz /media/usb/backup-companion-20210601.tar.gz --exclude=/backup.tar.gz --exclude=/media/usb --one-file-system /
+    $ sudo tar cvfpz /media/usb/backup-companion-20210601.tar.gz --exclude=/backup.tar.gz --exclude=/media/usb --one-file-system /
         command dissection: 
             tar - is the command that creates the archive. It is modified by each letter immediately following, each is explained bellow.
                 c - create a new backup archive.
@@ -1612,7 +1614,7 @@ content of an example .rosinstall file (gilbreth.rosinstall):
 ### to restore the backup
 
 ```bash
-sudo mount /dev/sdb1 /media/usb
+$ sudo mount /dev/sdb1 /media/usb
 lsblk #check if backup disk mounted correctly
 tar xvfpz /media/usb/backup-companion-20210601.tar.gz
 ```
