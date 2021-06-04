@@ -55,10 +55,17 @@ for more info on the format and meaning of variables, go to [dvl-a50-data](/dvl-
 
 ### dvl-python
 In companion, type:
-```
-  $ ping 192.168.2.2
-  $ ssh pi@192.168.2.2
+```bash
+  $ pip install crcmod pyserial
+  $ cd /home/pi/
+  $ git clone https://github.com/waterlinked/dvl-python.git
   $ cd ~/dvl-python
+  $ pip install -e .
+  $ python
+    >>>  from wldvl import WlDVL
+    >>>  dvl = WlDVL("/dev/ttyUSB0")
+    >>>  dvl.read()
+        {'fom': 0.002, 'time': 40.57, 'vy': 0.004, 'vz': -0.002, 'vx': -0.003, 'valid': True, 'altitude': 0.14}
 ```
 
 ## DVL ROS messages
@@ -89,14 +96,14 @@ for more info on DVL ROS setup, go to [dvl-a50-ros](/dvl-a50-ros)
 
 ## Operation within QGC
 
-### For Position Hold
+### For Position Hold (UNDER CONSTRUCTION)
 
   1. go to http://192.168.2.2:2770/waterlinked
   2. the "Status" field in the Waterlinked page should read Running.... 
   3. QGC will announce "EKF3 IMU0 STARTED RELATIVE AIDING" and then "EKF3 IMU0 FUSING ODOMETRY" (This means the DVL input is being fused.)
   4. switch to POSHOLD mode
 
-### For Deadreckoning (track ROV position in QGC map view): 
+### For Deadreckoning (track ROV position in QGC map view): (UNDER CONSTRUCTION)
 The DVL data is sent by the VISION_POSITION_DELTA [mavlink message](https://mavlink.io/en/messages/ardupilotmega.html#VISION_POSITION_DELTA).
 
 1. go to http://192.168.2.2:2770/waterlinked
@@ -106,8 +113,9 @@ The DVL data is sent by the VISION_POSITION_DELTA [mavlink message](https://mavl
 ## Nice guides to follow
 [BlueROV2 Software Setup](https://bluerobotics.com/learn/bluerov2-software-setup/#update-software)
 
+***
 
 Contributor: 
 **Si-yuan Chang** and **Alex Tretyakov**.
 
-This repository is in part coursework of CA-RIS-801 Marine Robotics in Spring 2021, Supervisor: Prof. Francesco Maurelli, Jacobs University Bremen. 
+This repository is in part coursework of CA-RIS-801 Marine Robotics, supervised by **Prof. Francesco Maurelli**, Jacobs University Bremen, Spring 2021.
