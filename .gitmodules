@@ -10,3 +10,6 @@
 [submodule "dvl-a50-future-work/PosHold/nortekdvl-driver"]
 	path = dvl-a50-future-work/PosHold/nortekdvl-driver
 	url = https://github.com/Williangalvani/ardupilot.git
+[submodule "dvl-a50-data/dvl-serial-python"]
+	path = dvl-a50-data/dvl-serial-python
+	url = https://github.com/nschang/dvl-python.git
