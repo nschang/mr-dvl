@@ -455,7 +455,7 @@ Easiest solution: get everything to work on the first pi. However, a reason for 
 ## 22-05-2021
 
 12:30 entered Duckietown
-13:00 powered on. 
+13:00 powered on.
 
 ```bash
     # install missing package from source
@@ -499,39 +499,43 @@ To use python3.6, use pip3.6 and python3.6 instead.
 12:00 entered Duckietown, found battery charger on & hot, shows "High Voltage" when plugging in both ROV batteries.
 
 Check [ROS-kinetic system requirements](https://www.ros.org/reps/rep-0003.html#kinetic-kame-may-2016-may-2021):
-> Kinetic Kame (May 2016 - May 2021)
->Required Support for:
->    Ubuntu Wily (15.10)
->    Ubuntu Xenial (16.04)
->Recommended Support for:
->    Debian Jessie
->    Fedora 23
->    Fedora 24
->Minimum Requirements:
->    C++11
->        GCC 4.9 on Linux, as it's the version that Debian Jessie ships with
->    Python 2.7
->        Python 3.4 not required, but testing against it is recommended
->    Lisp SBCL 1.2.4
->    CMake 3.0.2
->        Debian Jessie ships with CMake 3.0.2
->    Boost 1.55
->        Debian Jessie ships with Boost 1.55
->Exact or Series Requirements:
->    Ogre3D 1.9.x
->    Gazebo 7
->    PCL 1.7.x
->    OpenCV 3.x
->    Qt 5.3.x
->    PyQt5
->Build System Support:
->    catkin:
->        build from source
->        release for binary packaging
->        wiki documentation
->        continuous integration
->    rosbuild:
->        build from source
+
+```
+Kinetic Kame (May 2016 - May 2021)
+Required Support for:
+    Ubuntu Wily (15.10)
+    Ubuntu Xenial (16.04)
+Recommended Support for:
+    Debian Jessie
+    Fedora 23
+    Fedora 24
+Minimum Requirements:
+    C++11
+        GCC 4.9 on Linux, as it's the version that Debian Jessie ships with
+    Python 2.7
+        Python 3.4 not required, but testing against it is recommended
+    Lisp SBCL 1.2.4
+    CMake 3.0.2
+        Debian Jessie ships with CMake 3.0.2
+    Boost 1.55
+        Debian Jessie ships with Boost 1.55
+Exact or Series Requirements:
+    Ogre3D 1.9.x
+    Gazebo 7
+    PCL 1.7.x
+    OpenCV 3.x
+    Qt 5.3.x
+    PyQt5
+Build System Support:
+    catkin:
+        build from source
+        release for binary packaging
+        wiki documentation
+        continuous integration
+    rosbuild:
+        build from source
+
+```
 
 12:38
 
