@@ -12,9 +12,9 @@
 
 ```bash
 
-    $ sudo nano /etc/netplan/50-cloud-init.yaml
-    $ sudo netplan generate
-    $ sudo netplan apply
+    sudo nano /etc/netplan/50-cloud-init.yaml
+    sudo netplan generate
+    sudo netplan apply
 
 ```
 
@@ -22,10 +22,10 @@
 
 ```bash
 
-    $ sudo dpkg-reconfigure -plow unattended-upgrades
-    $ sudo dpkg --configure -a
-    $ sudo apt update && sudo apt -f install && sudo apt full-upgrade
-    $ sudo dpkg-reconfigure -plow unattended-upgrades
+    sudo dpkg-reconfigure -plow unattended-upgrades
+    sudo dpkg --configure -a
+    sudo apt update && sudo apt -f install && sudo apt full-upgrade
+    sudo dpkg-reconfigure -plow unattended-upgrades
 
 ```
 
@@ -45,28 +45,28 @@
 15:00 begin installing ROS noetic-desktop.
 
 ```bash
-    $ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-    $ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-    $ sudo apt update
-    $ sudo apt install ros-noetic-desktop
+    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+    sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+    sudo apt update
+    sudo apt install ros-noetic-desktop
 ```
 
 15:20 ROS environment setup
 
 ```bash
-    $ source /opt/ros/noetic/setup.bash
-    $ echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-    $ source ~/.bashrc
+    source /opt/ros/noetic/setup.bash
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
 
 ```
 
 15:30 Dependencies for building packages
 
 ```bash
-    $ sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
-    $ sudo apt install python3-rosdep
-    $ sudo rosdep init
-    $ rosdep update
+    sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+    sudo apt install python3-rosdep
+    sudo rosdep init
+    rosdep update
 ```
 
 15:40 successfully installed ROS noetic-desktop. After install:
@@ -113,17 +113,17 @@
 15:52 dvl ROS
 
 ```bash
-    $ cd~/catkin_ws/src
-    $ git clone -b master <https://github.com/waterlinked/dvl-a50-ros-driver.git>
-    $ cd~/catkin_ws
-    $ catkin_make
+    cd~/catkin_ws/src
+    git clone -b master <https://github.com/waterlinked/dvl-a50-ros-driver.git>
+    cd~/catkin_ws
+    catkin_make
 ```
 
 16:06 creating a symlink to python 3
 
 ```bash
-    $ sudo ln -s /usr/bin/python3 /usr/bin/python
-    $ sudo shutdown now
+    sudo ln -s /usr/bin/python3 /usr/bin/python
+    sudo shutdown now
 ```
 
 ## working on companion pi
@@ -181,19 +181,19 @@
 20:00 finished installation
 
 ```bash
-    $ mv -i kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
-    $ rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --tar > kinetic-desktop-full-wet.rosinstall
-    $ diff -u kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
-    $ wstool merge -t src kinetic-desktop-full-wet.rosinstall
-    $ wstool update -t src
-    $ ./src/catkin/bin/catkin_make_isolated --install
-    $ source ~/catkin_ws/devel/setup.bash
-    $ cd~/catkin_ws
-    $ rosinstall_generator ros_comm ros_control joystick_drivers --rosdistro kinetic --deps --wet-only --tar > kinetic-custom_ros.rosinstall
-    $ wstool merge -t src kinetic-custom_ros.rosinstall
-    $ wstool update -t src
-    $ rosdep update
-    $ cd/catkin_ws && catkin_make
+    mv -i kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
+    rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --tar > kinetic-desktop-full-wet.rosinstall
+    diff -u kinetic-desktop-full-wet.rosinstall kinetic-desktop-full-wet.rosinstall.old
+    wstool merge -t src kinetic-desktop-full-wet.rosinstall
+    wstool update -t src
+    ./src/catkin/bin/catkin_make_isolated --install
+    source ~/catkin_ws/devel/setup.bash
+    cd~/catkin_ws
+    rosinstall_generator ros_comm ros_control joystick_drivers --rosdistro kinetic --deps --wet-only --tar > kinetic-custom_ros.rosinstall
+    wstool merge -t src kinetic-custom_ros.rosinstall
+    wstool update -t src
+    rosdep update
+    cd/catkin_ws && catkin_make
 
 ```
 
@@ -262,23 +262,23 @@ Invoking "make cmake_check_build_system" failed
 18:00 initiated: building catkin workspace (LONG PROCESS > 3h) ABORTED AT ERROR
 
 ```bash
-    $ cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+    cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
 ```
 
 22:00 solving tf2 error (SOLVED)
 
 ```bash
-        <== Failed to process package 'tf2':
-          Command '['/opt/ros/kinetic/env.sh', 'make', '-j4', '-l4']' returned non-zero exit status 2
+    <== Failed to process package 'tf2':
+        Command '['/opt/ros/kinetic/env.sh', 'make', '-j4', '-l4']' returned non-zero exit status 2
 
-        Reproduce this error by running:
-        ==> cd /home/pi/catkin_ws/build_isolated/tf2 && /opt/ros/kinetic/env.sh make -j4 -l4
+    Reproduce this error by running:
+    ==> cd /home/pi/catkin_ws/build_isolated/tf2 && /opt/ros/kinetic/env.sh make -j4 -l4
 ```
 
 seems to be another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError. Fixed with following command:
 
 ```bash
-$ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
+cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
 ```
 
 - original
@@ -341,9 +341,14 @@ $ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make 
 ---working on new pi---
 
 13:00 setting commandline startup for new pi
+
+```bash
         GRUB_CMDLINE_LINUX_DEFAULT="text"
         GRUB_TERMINAL=console
-    save changes, then run:
+
+```
+
+save changes, then run:
 
 ```bash
     sudo update-grub
@@ -351,7 +356,7 @@ $ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make 
     sudo systemctl set-default multi-user.target
 ```
 
-    To undo `sudo systemctl set-default multi-user.target` simply type:
+To undo `sudo systemctl set-default multi-user.target` simply type:
     $ sudo systemctl enable graphical.target --force
     $ sudo systemctl set-default graphical.target
 
@@ -361,29 +366,37 @@ read later: troubleshooting relating to parameter setting <https://discuss.bluer
 
 change parameters/PID in QGroundControl:
     original:
-        AHRS_EKF_TYPE 3
-        EK2_ENABLE 0
-        EK3_ENABLE 1
-        VISO_TYPE 1
-        EK3_GPS_TYPE 31
-        PSC_POSXY_P 1.0
-        PSC_POSZ_P 3.0
-        PSC_VELXY_D 0.0
-        PSC_VELXY_I 0.5
-        PSC_VELXY_P 1.0
-        PSC_VELZ_P 8.0
-    new, per recommendations in the PR for creating the DVL service <https://www.ardusub.com/developers/dvl-integration.html>:
-        AHRS_EKF_TYPE 3
-        EK2_ENABLE 0
-        EK3_ENABLE 1
-        VISO_TYPE 1
-        EK3_GPS_TYPE 3
-        PSC_POSXY_P 2.5 # ERROR! QGC shows max 2.0?? force changed
-        PSC_POSZ_P 1.0
-        PSC_VELXY_D 0.8
-        PSC_VELXY_I 0.5
-        PSC_VELXY_P 5.0
-        PSC_VELZ_P 5.0
+
+```
+    AHRS_EKF_TYPE 3
+    EK2_ENABLE 0
+    EK3_ENABLE 1
+    VISO_TYPE 1
+    EK3_GPS_TYPE 31
+    PSC_POSXY_P 1.0
+    PSC_POSZ_P 3.0
+    PSC_VELXY_D 0.0
+    PSC_VELXY_I 0.5
+    PSC_VELXY_P 1.0
+    PSC_VELZ_P 8.0
+```
+
+new, per recommendations in the PR for creating the DVL service <https://www.ardusub.com/developers/dvl-integration.html>:
+
+```
+    AHRS_EKF_TYPE 3
+    EK2_ENABLE 0
+    EK3_ENABLE 1
+    VISO_TYPE 1
+    EK3_GPS_TYPE 3
+    PSC_POSXY_P 2.5 # ERROR! QGC shows max 2.0?? force changed
+    PSC_POSZ_P 1.0
+    PSC_VELXY_D 0.8
+    PSC_VELXY_I 0.5
+    PSC_VELXY_P 5.0
+    PSC_VELZ_P 5.0
+```
+
 The command history until 00:00 22 May 2021 is saved with the following command, at the external backup SD Card named backup_companion
 
 ```bash
@@ -403,9 +416,8 @@ NEXT:
 
 [Using ROS on Multiple Machines](https://wiki.ros.org/ROS/Tutorials/MultipleMachines)
 [Controlling a robot using 2 raspberry pi's](https://www.raspberrypi.org/forums/viewtopic.php?t=202489)
-Communication between two pi
 
-maybe connect with LAN and use TCP sockets to send and receive messages? A solution: First ping to second pi from first pi. Then use the other Pi's GPIO open a connection in the script on first Pi with
+For Communication between two pi's: maybe connect with LAN and use TCP sockets to send and receive messages? A solution: First ping to second pi from first pi. Then use the other Pi's GPIO open a connection in the script on first Pi with
 
 ```bash
     remote_pi = pigpio.pi("192.168.1.2")
@@ -424,6 +436,7 @@ or
 ```
 
 etc.
+
 Other options are:
 
 - Python socket examples
@@ -439,18 +452,18 @@ Easiest solution: get everything to work on the first pi. However, a reason for 
 > To go further, let’s imagine you now have a robot fleet, with 10 robots powered by Raspberry Pi, plus one central computer. The latter will be used to monitor all robots, and create a path for each one so they do not collide with the environment and other robots.
 > You’d create a multi-machine environment, where each robot follows the order from the “master” computer. Each robot would just run the necessary code to interact with hardware, and let the master computer do the heavy work."
 
-20210522
+## 22-05-2021
 
 12:30 entered Duckietown
-13:00 powered on
-    // install missing package from source
+13:00 powered on. 
 
 ```bash
+    # install missing package from source
     $ cd~/catkin_ws/src
     git clone <https://github.com/ros-geographic-info/geographic_info.git>
     $ cd~/catkin_ws
     rosdep install --from-paths src/ --ignore-src --rosdistro kinetic
-        // however encountered error:
+    # however encountered error:
         ERROR: the following packages/stacks could not have their rosdep keys resolved to system dependencies:
         bluerov_apps: Cannot locate rosdep definition for [pcl_ros]
         geographic_msgs: Cannot locate rosdep definition for [uuid_msgs]
@@ -624,61 +637,61 @@ BlueROV Simulation
 Instructions to install from source for ROS Kinetic on Debian Jessie:
 
 ```bash
-    $ mkdir -p ~/ros_catkin_ws/external_src
-    $ cd ~/ros_catkin_ws/external_src
-    $ wget <http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download> -O assimp-3.1.1_no_test_models.zip
-    $ unzip assimp-3.1.1_no_test_models.zip
-    $ cd assimp-3.1.1
-    $ cmake .
-    $ make -j2
-    $ sudo make install -j2
+    mkdir -p ~/ros_catkin_ws/external_src
+    cd ~/ros_catkin_ws/external_src
+    wget <http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download> -O assimp-3.1.1_no_test_models.zip
+    unzip assimp-3.1.1_no_test_models.zip
+    cd assimp-3.1.1
+    cmake .
+    make -j2
+    sudo make install -j2
 ```
 
 How to install ROS Package from git:
 
 ```bash
-    $ cd ~/catkin_ws/src
-    $ git clone -b <branch> <address>
-    $ cd ~/catkin_ws
-    $ catkin_make
+    cd ~/catkin_ws/src
+    git clone -b <branch> <address>
+    cd ~/catkin_ws
+    catkin_make
 ```
 
 Resolve Dependency:
 
 ```bash
-    $ cd ~/catkin_ws
-    $ rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
+    cd ~/catkin_ws
+    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:jessie
 ```
 
 Build Catkin Workspace:
 
 ```bash
-    $ cd ~/catkin_ws
-    $ catkin build --dry-run    # Show the package build order
-    $ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2
-    $ source /opt/ros/kinetic/setup.bash
-    $ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+    cd ~/catkin_ws
+    catkin build --dry-run    # Show the package build order
+    sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic -j2
+    source /opt/ros/kinetic/setup.bash
+    echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 ```
 
 When building speficic packages:
 
 ```bash
-    $ cd /catkin_ws
-    $ catkin build dvl-a50-ros-driver        # Build dvl-a50-ros-driver and its dependencies
+    cd /catkin_ws
+    catkin build dvl-a50-ros-driver        # Build dvl-a50-ros-driver and its dependencies
 ```
 
 Repair:
 
 ```bash
-    $ apt-get install -f
-    $ sudo apt-get -f install
+    apt-get install -f
+    sudo apt-get -f install
 ```
 
 Maintenance
 
 ```bash
-    $ sudo apt-get update ; sudo apt-get upgrade
-    $ sudo apt-get clean ; sudo apt-get autoclean ; sudo apt-get autoremove
+    sudo apt-get update ; sudo apt-get upgrade
+    sudo apt-get clean ; sudo apt-get autoclean ; sudo apt-get autoremove
 ```
 
 Workspace Maintenance:
@@ -1196,7 +1209,8 @@ returns further errors "No package 'bullet' found". solved with following:
     catkin_make --only-pkg-with-deps tf2_bullet
 ```
 
-returns errors with tf2 and "geometry2/tf2/CMakeFiles/tf2.dir/src/buffer_core.cpp.o". SOLVED WITH FOLLOWING (cite <https://eleccelerator.com/wiki/index.php?title=Raspbian_Buster_ROS_RealSense#Problem:_logWarn_or_logError_not_declared_in_scope> This is another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError):
+returns errors with `tf2` and `geometry2/tf2/CMakeFiles/tf2.dir/src/buffer_core.cpp.o`.
+Solved with [following](https://eleccelerator.com/wiki/index.php?title=Raspbian_Buster_ROS_RealSense#Problem:_logWarn_or_logError_not_declared_in_scope) This is another code revision incompatibility. It seems that `logError` became `CONSOLE_BRIDGE_logError`. The fix is going into the source file `buffer_core.cpp` and add in a macro to redefine `logWarn` and `logError`:
 
 ```bash
     sudo nano ~/catkin_ws/src/geometry2/tf2/src/buffer_core.cpp
@@ -1318,7 +1332,7 @@ rosdep install
     joy
 ```
 
-The command history until 23:00 26 May 2021 is saved with the following command, at the external backup SD Card named backup_companion.
+The command history until 23:00 26 May 2021 is saved with the following command, at the external backup SD Card `/backup_companion`.
 
 ```bash
     cd /backup_companion
