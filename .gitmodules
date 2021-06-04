@@ -1,3 +1,6 @@
 [submodule "dvl-a50-ros-driver"]
 	path = dvl-a50-ros-driver
 	url = https://github.com/nschang/dvl-a50-ros-driver.git
+[submodule "dvl-a50-ros"]
+	path = dvl-a50-ros
+	url = https://github.com/nschang/dvl-a50-ros-driver.git
