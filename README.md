@@ -23,7 +23,9 @@ The DVL must be configured with a static IP address of 192.168.2.95. Follow Wate
 
 ### DVL Status Check
 The LED on the side should be flashing (loonking for bottomlock) or fixed green light (bottomlocked). when running dry on land, it is recommended to add additional cooling to DVL by water or wind.
+### A50 DVL configuration
 
+The DVL must be configured with a static IP address of 192.168.2.95. Follow Water Linked's instructions [here](https://waterlinked.github.io/dvl/dvl-a50-details/#network-configuration).
 ### Open WebUI for monitoring
 In browser, go to 192.168.2.95, check for active data or error messages. In another tab, go to 192.168,2.2:2770/waterlinked for management page. 
 
@@ -65,6 +67,7 @@ In companion, type:
     >>>  from wldvl import WlDVL
     >>>  dvl = WlDVL("/dev/ttyUSB0")
     >>>  dvl.read()
+    # the output should look like this
         {'fom': 0.002, 'time': 40.57, 'vy': 0.004, 'vz': -0.002, 'vx': -0.003, 'valid': True, 'altitude': 0.14}
 ```
 
