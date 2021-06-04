@@ -46,12 +46,14 @@
 ```
 
 15:00 begin installing ROS noetic-desktop.
-    ```
+
+```bash
     sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
     sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
     sudo apt update
     sudo apt install ros-noetic-desktop
-    ```
+```
+
 15:20 ROS environment setup
 
 ```bash
@@ -102,7 +104,7 @@
 
 15:50 create ROS workspace
 
-```
+```bash
     mkdir -p ~/catkin_ws/src
     cd ~/catkin_ws/
     catkin_make
@@ -202,7 +204,7 @@
 
 CMake Warning at /opt/ros/kinetic/share/catkin/cmake/catkinConfig.cmake:76 (find_package):
 
-```
+```bash
     Could not find a package configuration file provided by "geometry_msgs" with any of the following names:
 
     geometry_msgsConfig.cmake
@@ -262,7 +264,11 @@ Invoking "make cmake_check_build_system" failed
 16:00 uninstalled Python 3
 
 18:00 initiated: building catkin workspace (LONG PROCESS > 3h) ABORTED AT ERROR
+
+```bash
     cd ~/catkin_ws && sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/kinetic
+```
+
 22:00 solving tf2 error (SOLVED)
 
 ```bash
@@ -273,7 +279,7 @@ Invoking "make cmake_check_build_system" failed
         ==> cd /home/pi/catkin_ws/build_isolated/tf2 && /opt/ros/kinetic/env.sh make -j4 -l4
 ```
 
-    %%%seems to be another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError. Fixed with following command%%%
+%%%seems to be another code revision incompatibility, the internet says that logError became CONSOLE_BRIDGE_logError. The fix is going into the source file buffer_core.cpp and add in a macro to redefine logWarn and logError. Fixed with following command%%%
 
 ```bash
 cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j4 -l4
@@ -281,7 +287,7 @@ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j
 
 %%%original%%%
 
-```
+```bash
     #include "tf2/buffer_core.h"
     #include "tf2/time_cache.h"
     #include "tf2/exceptions.h"
@@ -300,13 +306,11 @@ cd /home/pi/catkin_ws/build_isolated/tf2 && sudo /opt/ros/kinetic/env.sh make -j
     rest of the code
 ```
 
-#
-
 %%%updated%%%
             %%%updated%%%
 %%%updated%%%
 
-```
+```bash
     #include "tf2/buffer_core.h"
     #include "tf2/time_cache.h"
     #include "tf2/exceptions.h"
@@ -397,33 +401,45 @@ NEXT:
 1. take rov to OceanLab for testing position keeping & DVL data output for Nav
 2. try to connect two pi. Problem: how to power the second pi?
 
-# read later
+### read later
 
-    https://wiki.ros.org/ROS/Tutorials/MultipleMachines
-    https://www.raspberrypi.org/forums/viewtopic.php?t=202489
+[Using ROS on Multiple Machines](https://wiki.ros.org/ROS/Tutorials/MultipleMachines)
+[Controlling a robot using 2 raspberry pi's](https://www.raspberrypi.org/forums/viewtopic.php?t=202489)
 Communication between two pi
 
-    maybe connect with LAN and use TCP sockets to send and receive messages? A solution: First ping to second pi from first pi. Then use the other Pi's GPIO open a connection in the script on first Pi with
-        remote_pi = pigpio.pi("192.168.1.2")
-    and then use remote_pi to reference the others GPIO, e.g. 
-        remote_pi.read(4)
-        or
-        remote_pi.set_PWM_dutycycle(4, 64)
-        etc.
-    Other options are:
-        Python socket examples
-        MQTT examples
-        Use pigpio Python module http://abyz.me.uk/rpi/pigpio/python.html
+maybe connect with LAN and use TCP sockets to send and receive messages? A solution: First ping to second pi from first pi. Then use the other Pi's GPIO open a connection in the script on first Pi with
 
-    Easiest solution: get everything to work on the first pi.
-    However, a reason for additional pi: Externalize heavy computation.
-    "you would probably have 2 planners: one local real-time planner, doing basic stuff like react to unexpected obstacles and avoid crashing into things. The other planner (let’s call it the global planner) would do some more heavy computation, and provide a complete path to follow every 5 seconds, depending on all the possible variables that are available from all sensors in the environment. 
-    As you can guess, the real-time planner needs less computation power, but a really high frequency loop execution. So, keeping it on the Raspberry Pi is certainly the best choice to make here. 
-    As for the global planner, you don’t need a high execution frequency (one execution every few seconds), but you need some heavy computations to be made, which is not something your Raspberry Pi can handle easily.
-    In this scenario, you could externalize the global planner to a standard computer/laptop, which is working remotely from the robot. Every 5 seconds, the fast computer will compute the new updated path and send it to the Raspberry Pi, which will try to follow it, and react accordingly to obstacles with the real-time planner.
-    There is a simple way to do that: you can use the multi-machine functionality from ROS. Basically you’d launch a ROS master in one of the two machines, and then connect the machines together, so they can exchange data through topics, services, actions, etc.
-    To go further, let’s imagine you now have a robot fleet, with 10 robots powered by Raspberry Pi, plus one central computer. The latter will be used to monitor all robots, and create a path for each one so they do not collide with the environment and other robots.
-    You’d create a multi-machine environment, where each robot follows the order from the “master” computer. Each robot would just run the necessary code to interact with hardware, and let the master computer do the heavy work."
+```bash
+    remote_pi = pigpio.pi("192.168.1.2")
+```
+
+and then use remote_pi to reference the others GPIO, e.g.
+
+```bash
+    remote_pi.read(4)
+```
+
+or
+
+```bash
+    remote_pi.set_PWM_dutycycle(4, 64)
+```
+
+etc.
+Other options are:
+
+- Python socket examples
+- MQTT examples
+- Use pigpio Python module <http://abyz.me.uk/rpi/pigpio/python.html>
+
+Easiest solution: get everything to work on the first pi. However, a reason for additional pi: Externalize heavy computation.
+> "you would probably have 2 planners: one local real-time planner, doing basic stuff like react to unexpected obstacles and avoid crashing into things. The other planner (let’s call it the global planner) would do some more heavy computation, and provide a complete path to follow every 5 seconds, depending on all the possible variables that are available from all sensors in the environment.
+> As you can guess, the real-time planner needs less computation power, but a really high frequency loop execution. So, keeping it on the Raspberry Pi is certainly the best choice to make here.
+> As for the global planner, you don’t need a high execution frequency (one execution every few seconds), but you need some heavy computations to be made, which is not something your Raspberry Pi can handle easily.
+> In this scenario, you could externalize the global planner to a standard computer/laptop, which is working remotely from the robot. Every 5 seconds, the fast computer will compute the new updated path and send it to the Raspberry Pi, which will try to follow it, and react accordingly to obstacles with the real-time planner.
+> There is a simple way to do that: you can use the multi-machine functionality from ROS. Basically you’d launch a ROS master in one of the two machines, and then connect the machines together, so they can exchange data through topics, services, actions, etc.
+> To go further, let’s imagine you now have a robot fleet, with 10 robots powered by Raspberry Pi, plus one central computer. The latter will be used to monitor all robots, and create a path for each one so they do not collide with the environment and other robots.
+> You’d create a multi-machine environment, where each robot follows the order from the “master” computer. Each robot would just run the necessary code to interact with hardware, and let the master computer do the heavy work."
 
 20210522
 
@@ -522,14 +538,15 @@ Check system requirements, per <https://www.ros.org/reps/rep-0003.html#kinetic-k
     sudo nano /etc/apt/sources.list.d/ros-latest.list
 ```
 
-        deb http://packages.ros.org/ros/debian jessie main non-free contrib
-        deb-src http://packages.ros.org/ros/debian jessie main non-free contrib
+```bash
+    deb http://packages.ros.org/ros/debian jessie main non-free contrib
+    deb-src http://packages.ros.org/ros/debian jessie main non-free contrib
 
-        deb http://mirror.pregi.net/debian/ jessie main non-free contrib
-        deb-src http://mirror.pregi.net/debian/ jessie main non-free contrib
+    deb http://mirror.pregi.net/debian/ jessie main non-free contrib
+    deb-src http://mirror.pregi.net/debian/ jessie main non-free contrib
 
-        deb http://security.debian.org/ jessie/updates main contrib non-free
-        deb-src http://security.debian.org/ jessie/updates main contrib non-free
+    deb http://security.debian.org/ jessie/updates main contrib non-free
+    deb-src http://security.debian.org/ jessie/updates main contrib non-free
 
 deb <http://packages.ros.org/ros/debian> jessie main
 
@@ -538,15 +555,19 @@ deb-src <http://mirror.pregi.net/debian/> jessie main non-free contrib
 
 deb <http://security.debian.org/> jessie/updates main contrib non-free
 deb-src <http://security.debian.org/> jessie/updates main contrib non-free
+```
 
 ROS delete package:
+For removing packages: Just delete them (and rebuild). They'll be gone.
+For removing a workspace: Just delete it (there are no other traces).
+
+```bash
     sudo apt-get remove ros-$Distro-$package_name
-    For removing packages: Just delete them (and rebuild). They'll be gone.
-    For removing a workspace: Just delete it (there are no other traces).
+```
 
 ERROR:
 
-```
+```bash
     IOError: [Errno 13] Permission denied: '/home/pi/ros_catkin_ws/build_isolated/.built_by'
 ```
 
@@ -904,7 +925,7 @@ install ROS kinetic dependencies
 sudo apt-get install -y ros-kinetic-image-common ros-kinetic-robot-state-publisher ros-kinetic-joint-state-publisher ros-kinetic-image-transport-plugins ros-kinetic-mavros ros-kinetic-mavros-msgs ros-kinetic-mavros-extras ros-kinetic-joy
 ```
 
-```
+```bash
     E: Unable to locate package ros-kinetic-image-common
     E: Unable to locate package ros-kinetic-robot-state-publisher
     E: Unable to locate package ros-kinetic-joint-state-publisher
@@ -1002,9 +1023,6 @@ installing DVL python
 ```python
         >>>  from wldvl import WlDVL
         >>>  dvl = WlDVL("/dev/ttyUSB0")
-
-#
-
         >>>  dvl.read()
             {'fom': 0.002, 'time': 40.57, 'vy': 0.004, 'vz': -0.002, 'vx': -0.003, 'valid': True, 'altitude': 0.14}
 ```
@@ -1015,13 +1033,12 @@ freeing up space on companion pi by deleting legacy ROS workspace (backed up)
     rm -rf ros_catkin_ws
 ```
 
-Also, about which build/make tool is the best (<https://answers.ros.org/question/320613/catkin_make-vs-catkin_make_isolated-which-is-preferred/>)
-
-    `catkin_make` was the first script around to build catkin workspace and is therefore used in many tutorials. It has several down sides (requiring non-standard logic in packages to declared cross-package target dependencies) and limitation (can't process plain CMake packages, requires all targets across all packages in a workspace to be unique). Therefore I wouldn't recommend to use it.
-    catkin_make_isolated is the script which was developed next which addresses all these shortcomings. It comes at the cost of being slower since it processes all packages sequentially. It is being used on build.ros.org in the devel and PR jobs. I would recommend using this if you want the most reliable solution (exclusively for ROS 1).
-    catkin_tools (called catkin build above) is similar to catkin_make_isolated but addresses the performance limitation by processing packages in parallel where possible. It also has a lot of usability features which makes it much easier to use and configure. On the downside this tool is not being actively maintained for the past years so I wouldn't recommend it either.
-    colcon is the new build tool developed for ROS 2 and works similar to catkin_tools with less usability features at the moment but being able to build any kind of packages (catkin, ament, CMake, Python setuptools, gradle, bazel, cargo, ...) on all major platforms (Linux, macOS, Windows). While developed for ROS 2 it in principle also works for ROS 1. If you are willing to use something more bleeding edge (which might come with quirks which haven't been resolved / polished yet) this might be an option. The big advantage is that the tool is very modular and actively developed and extended by multiple parties.
-    Good resource: [catkin-tools](https://catkin-tools.readthedocs.io/en/latest.html)
+Also, about [which build/make tool is the best](<https://answers.ros.org/question/320613/catkin_make-vs-catkin_make_isolated-which-is-preferred/>)
+> `catkin_make` was the first script around to build catkin workspace and is therefore used in many tutorials. It has several down sides (requiring non-standard logic in packages to declared cross-package target dependencies) and limitation (can't process plain CMake packages, requires all targets across all packages in a workspace to be unique). Therefore I wouldn't recommend to use it.
+> catkin_make_isolated is the script which was developed next which addresses all these shortcomings. It comes at the cost of being slower since it processes all packages sequentially. It is being used on build.ros.org in the devel and PR jobs. I would recommend using this if you want the most reliable solution (exclusively for ROS 1).
+> catkin_tools (called catkin build above) is similar to catkin_make_isolated but addresses the performance limitation by processing packages in parallel where possible. It also has a lot of usability features which makes it much easier to use and configure. On the downside this tool is not being actively maintained for the past years so I wouldn't recommend it either.
+> colcon is the new build tool developed for ROS 2 and works similar to catkin_tools with less usability features at the moment but being able to build any kind of packages (catkin, ament, CMake, Python setuptools, gradle, bazel, cargo, ...) on all major platforms (Linux, macOS, Windows). While developed for ROS 2 it in principle also works for ROS 1. If you are willing to use something more bleeding edge (which might come with quirks which haven't been resolved / polished yet) this might be an option. The big advantage is that the tool is very modular and actively developed and extended by multiple parties.
+Good resource: [catkin-tools](https://catkin-tools.readthedocs.io/en/latest.html)
 
 The command history until 02:00 26 May 2021 is saved with the following command, at the external backup SD Card named backup_companion
 
@@ -1047,7 +1064,7 @@ The command history until 02:00 26 May 2021 is saved with the following command,
     catkin_make
 ```
 
-```
+```bash
         errors encountered: missing package from ros_controls. Solved with following command.
 ```
 
@@ -1185,7 +1202,7 @@ returns errors with tf2 and "geometry2/tf2/CMakeFiles/tf2.dir/src/buffer_core.cp
     sudo nano ~/catkin_ws/src/geometry2/tf2/src/buffer_core.cpp
 ```
 
-```
+```bash
     #include "tf2/buffer_core.h"
     #include "tf2/time_cache.h"
     #include "tf2/exceptions.h"
@@ -1366,7 +1383,7 @@ solved!!!added repos:
     sudo nano /etc/apt/sources.list
 ```
 
-```
+```bash
     deb <http://archive.debian.org/debian/> jessie main contrib non-free
     # deb-src <http://archive.debian.org/debian/> jessie main
     deb <http://mirrordirector.raspbian.org/raspbian/> jessie main contrib non-f$
@@ -1404,20 +1421,20 @@ git push
 
 ### Error: When `catkin_make`freezes the pi
 
-    Recover by: ctrl+c
-    Potential solution, try again using 
+Recover by: ctrl+c
+Potential solution, try again using
 
 ```bash
         catkin_make -j1 #single-thread compilation
 ```
 
-        or
+or
 
 ```bash
         catkin_make -j2 #double-thread compilation
 ```
 
-        or 
+or
 
 ```bash
         catkin_make -j4 -l4 #quadruple-thread compilation
@@ -1434,7 +1451,7 @@ Fix:
 go to line 38
 original:  
 
-```
+```bash
     38 #if !(__ARM_ARCH_7A__)
     39 #error compilation requires an ARMv7-a architecture.   
     40 #endif
@@ -1442,7 +1459,7 @@ original:
 
 after fix:
 
-```
+```bash
     38 //#if !(__ARM_ARCH_7A__)
     39 //#error compilation requires an ARMv7-a architecture.   
     40 //#endif*/
@@ -1451,13 +1468,13 @@ after fix:
 then go to line 64
 original:
 
-```
+```bash
     64 #define __TBB_full_memory_fence() __asm__ __volatile__("dmb ish": : :"memo    ry")
 ```
 
 after fix:
 
-```
+```bash
     64 #define __TBB_full_memory_fence() 0xffff0fa0  // __asm__ __volatile__("dmb ish": : :"memo    ry")
 ```
 
@@ -1484,7 +1501,7 @@ Gripper: Channel 3
     rostopic list -v
 ```
 
-```
+```bash
 Published topics:
     * /rosout [rosgraph_msgs/Log] 1 publisher
     * /rosout_agg [rosgraph_msgs/Log] 1 publisher
@@ -1501,7 +1518,7 @@ how to publish ros message in terminal:
         rosmsg show waterlinked_a50_ros_driver/DVL
 ```
 
-```
+```bash
     std_msgs/Header header
         uint32 seq
         time stamp
@@ -1558,7 +1575,7 @@ go to \<http://wiki.ros.org/>><package-name>?distro=kinetic\
 
 content of an example .rosinstall file (gilbreth.rosinstall):
 
-```
+```bash
     - git:
         local-name: gilbreth
         uri: <https://github.com/swri-robotics/gilbreth.git>
@@ -1633,11 +1650,11 @@ Notes on X (XInputMode):
 
 ## good resources for ROS kinetic
 
-    [Industrial ROS Kinetic Trainer](https://industrial-training-master.readthedocs.io/en/kinetic/)
+[Industrial ROS Kinetic Trainer](https://industrial-training-master.readthedocs.io/en/kinetic/)
 
-## Good to know: How to NOT build package(s)
+### Good to know: How to NOT build package(s)
 
-    # "List of ';' separated packages to build"
+"List of ';' separated packages to build"
 
 ```bash
     `catkin_make`-DCATKIN_BLACKLIST_PACKAGES="foo;bar"
@@ -1653,9 +1670,9 @@ Notes on X (XInputMode):
 
 ## Status as of 26-05-2021 15:11
 
-    Current status of the companion pi: the currently installed version is ros-kinetic_comms-wet, a bare bone installation with basic communication functions. The active workspace is catkin_ws. `catkin_make`returns no error in its current state. A disk mirror of /home/pi has been made on 26-05-2021 15:11.
-    Also a note on installing packages, Debian Jessie is End-of-Life and build farm support has been turned off, so apt-get commands won't work on the companion pi and all ros packages need to be installed from source (awful lot of work). 
-    The currently installed 108 packages are: 
+Current status of the companion pi: the currently installed version is ros-kinetic_comms-wet, a bare bone installation with basic communication functions. The active workspace is catkin_ws. `catkin_make`returns no error in its current state. A disk mirror of /home/pi has been made on 26-05-2021 15:11.
+Also a note on installing packages, Debian Jessie is End-of-Life and build farm support has been turned off, so apt-get commands won't work on the companion pi and all ros packages need to be installed from source (awful lot of work).
+The currently installed 108 packages are:
         -- ~~  - genmsg
         -- ~~  - gencpp
         -- ~~  - geneus
