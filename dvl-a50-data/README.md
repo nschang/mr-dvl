@@ -6,7 +6,7 @@ The DVL publishes its measurement data in the following format: json and ROS mes
 
 ## Reading Data from DVL
 
-One can read data from DVL in the following ways
+One can read data from DVL in the following ways: 
 json format:
   read data in terminal:
     `nc 192.168.2.95 16171`
@@ -186,26 +186,34 @@ WaterLinked provides a package that turns the json output to ROS message.
 
 ### Usage
 
-Find the DVLs IP address. Once that's done, the package and it's components can be run by following these steps:
+Find the DVLs IP address (`192.168.2.95`). Once that's done, the package and it's components can be run by following these steps:
 
 **To run the publisher that listens to the TCP port and sends the data to ROS**
 
 ```bash
-rosrun waterlinked_a50_ros_driver publisher.py _ip:=TCP_IP
+  rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95
 ```
-
-where TCP_IP should be replaced by the IP of the DVL. You can also display the raw DVL data in the terminal by specifying the argument "do_log_data":
+where _IP is replaced by the IP of the DVL, in our case `192.168.2.95`. You can also display the raw DVL data in the terminal by specifying the argument "do_log_data":
 
 **To run the publisher that listens to the TCP port, displays the raw data in the DVL and sends the data to ROS**
 
 ```bash
-rosrun waterlinked_a50_ros_driver publisher.py _ip:=TCP_IP _do_log_data:=true
+  rosrun waterlinked_a50_ros_driver publisher.py _ip:=192.168.2.95 _do_log_data:=true
 ```
 
-**To run a subscriber node that listens to the DVL topic. Helpful for debugging or checking if everything is running as it should be. Choose between "subscriber_gui.py" and "subscriber.py". The GUI makes reading data visually much easier. While the non-GUI version makes it easier to read through the code to see how you can implement code yourself.**
+**To run a subscriber node that listens to the DVL topic.**
+Helpful for debugging or checking if everything is running as it should be. Choose between "subscriber_gui.py" and "subscriber.py". The non-GUI version is used here due to limitations of companion pi with commandline interface. 
 
 ```bash
-rosrun waterlinked_a50_ros_driver subscriber_gui.py
+  rosrun waterlinked_a50_ros_driver subscriber.py
+```
+**Alternatively, publish DVL message as ROS message:**
+```bash
+  $ roscore
+  # for server node:
+  $ rosrun comm_tcp server_node 16171
+  # for client node:
+  $ rosrun comm_tcp client_node 192.168.2.95 16171
 ```
 **The published ROS message looks like this:**
 
@@ -222,43 +230,13 @@ geometry_msgs/Vector3 velocity
 float64 fom
 float64 altitude
 waterlinked_a50_ros_driver/DVLBeam[] beams
-  int64 id
-  float64 velocity
-  float64 distance
-  float64 rssi
-  float64 nsd
-  bool valid
+  int64 id    #Transducer ID
+  float64 velocity    #Velocity reported by transducer
+  float64 distance    #Distance value
+  float64 rssi    #RSSI
+  float64 nsd    #NSD
+  bool valid    #Report if beam is locked on and providing reliable data
   bool velocity_valid
 int64 status
 string form
 ```
-
-    DVL beam
-    #Transducer ID
-    int64 id
-    #Velocity reported by transducer
-    float64 velocity
-    #Distance value
-    float64 distance
-    #RSSI
-    float64 rssi
-    #NSD
-    float64 nsd
-    #Report if beam is locked on and providing reliable data
-    bool valid
-
-## Data Output
-
-ros message
-code:
-  function: read dvl data, save as readable file
-    $ roscore
-  for server node:
-    $ rosrun comm_tcp server_node 16171
-  for client node:
-    $ rosrun comm_tcp client_node 192.168.2.95 16171
-used MAC as a client (for now, to generate data string for nav team):
-  read data in terminal:
-    $ nc 192.168.2.95 16171
-  read data and save to text file:
-    $ nc 192.168.2.95 16171 > out.txt
