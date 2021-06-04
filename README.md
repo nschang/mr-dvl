@@ -27,13 +27,11 @@ The LED on the side should be flashing (loonking for bottomlock) or fixed green 
 
 The DVL must be configured with a static IP address of 192.168.2.95. Follow Water Linked's instructions [here](https://waterlinked.github.io/dvl/dvl-a50-details/#network-configuration).
 ### Open WebUI for monitoring
-In browser, go to 192.168.2.95, check for active data or error messages. In another tab, go to 192.168,2.2:2770/waterlinked for management page. 
-
-For more detils on reading DVL data, go to [dvl-a50-data](/dvl-a50-data).
+In browser, go to <http://192.168.2.95>, check for active data or error messages. In another tab, go to <http://192.168,2.2:2770/waterlinked> for management page. 
 
 ## Reading Data from DVL (json)
 
-One can read data from DVL in the following ways: 
+DVL data can be read in the following ways. For more detils on reading DVL data, go to [dvl-a50-data](/dvl-a50-data). 
 
 ### json format:
 
