@@ -1,5 +1,6 @@
 # Command History - DVL
 
+---
 ## 20-05-2021
 
 12:30 Entered Duckietown
@@ -233,6 +234,7 @@ Invoking "make cmake_check_build_system" failed
 
 ---END OF DAY 20210520---
 
+---
 ## 21-05-2021
 
 9:30 entered Duckietown
@@ -457,6 +459,7 @@ Easiest solution: get everything to work on the first pi. However, a reason for 
 > To go further, let’s imagine you now have a robot fleet, with 10 robots powered by Raspberry Pi, plus one central computer. The latter will be used to monitor all robots, and create a path for each one so they do not collide with the environment and other robots.
 > You’d create a multi-machine environment, where each robot follows the order from the “master” computer. Each robot would just run the necessary code to interact with hardware, and let the master computer do the heavy work."
 
+---
 ## 22-05-2021
 
 12:30 entered Duckietown
@@ -709,7 +712,7 @@ Workspace Maintenance:
     $ catkin clean --orphans
 ```
 
-TASKS
+Goals
 
 - FIRST: install ROS workspace
 - SECOND: install DVL to output ROS message <https://github.com/waterlinked/dv-a50-ros-driver>
@@ -1067,9 +1070,10 @@ The command history until 02:00 26 May 2021 is saved with the following command,
 
 ---END OF DAY 20210525---
 
+---
 ## 26-05-2021
 
-### creating a backup
+creating a backup
 
 ```bash
     $ sudo rsync -av --delete /home/pi /backup_companion/home/pi
@@ -1323,6 +1327,7 @@ The command history until 23:00 26 May 2021 is saved with the following command,
 
 Goal of 20210527: `catkin_make` no errors
 
+---
 ## 27-05-2021
 
 10:00 meet alex to assemble robot
@@ -1338,6 +1343,7 @@ Workflow of position hold test:
     3. QGC will announce `EKF3 IMU0 STARTED RELATIVE AIDING` and then `EKF3 IMU0 FUSING ODOMETRY` (This means the DVL input is being fused.)
     4. In QGC, switch to `POSHOLD` mode
 
+---
 ## 28-05-2021
 
 Problem: No video feed on mac QGC (downloaded from QGC website) SOLVED
@@ -1400,6 +1406,7 @@ solving NO_PUBKEY during apt-get update
     $ git push
 ```
 
+---
 ## 31-05-2021
 
 ### Error: When `catkin_make`freezes the pi
@@ -1473,6 +1480,7 @@ then go to line 64
     Parameter for Compass changed in ArduSub. QGC not caught up with latest change in parameter. However current version of QGC is recommended by BlueROV & am still able to calibrate without the parameter. Not worthy to solve.
   - Fix: IGNORED!
 
+---
 ## 01-06-2021
 
 ```bash
@@ -1601,22 +1609,15 @@ Successful backup at 18:30 01-06-2021.
   - problem two: QGC does not recognize joystick in X mode. (Newton SeaGripper Wiki recommends to use X mode). Does it matter?
   - Solved by: Changing Joystick button assignment: Go to Vehicle setting -> Joystick -> Button Assignment
   - original:
-
-```
-7: mount_center Disabled
-8: input_hold_set Disabled
-9: mount_tilt_down mount_pan_left
-10: mount_tilt_up mount_pan_right
-```
-
+    - 7: mount_center Disabled
+    - 8: input_hold_set Disabled
+    - 9: mount_tilt_down mount_pan_left
+    - 10: mount_tilt_up mount_pan_right
   - New:
-
-```
-7: mount_center Disabled
-8: input_hold_set Disabled
-9: servo_3_min_momentary mount_tilt_down
-10: servo_3_max_momentary mount_tilt_up
-```
+    - 7: mount_center Disabled
+    - 8: input_hold_set Disabled
+    - 9: servo_3_min_momentary mount_tilt_down
+    - 10: servo_3_max_momentary mount_tilt_up
 
 It worked! but "shifting" the buttons via the center button (with Logitech Logo) only works in Windows.
 <https://aws1.discourse-cdn.com/business5/uploads/bluerobotics/original/2X/7/70cd1c739db137407c58c29e6418d7089eadbc42.jpg>
