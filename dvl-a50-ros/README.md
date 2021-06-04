@@ -3,7 +3,7 @@
 A repo cloned from [dvl-a50-ros-driver](https://github.com/nschang/dvl-a50-ros-driver) by Water Linked is available at [dvl-a50-ros-driver](/dvl-a50-ros/dvl-a50-ros-driver). Modified for local deployment. 
 
 ## The DVL-A50 ROS node
-The node publishes data to the topics: "*dvl/json_data*" and "*dvl/data*".
+The DVL ROS node publishes data to the topics: "*dvl/json_data*" and "*dvl/data*".
 * *dvl/json_data*: uses a simple String formated topic that publishes the raw json data coming from the DVL.
 * *dvl/data*: Uses a custom message type that structures the parsed data following our protocol. Read more about the protocol here: [DVL Protocol](https://waterlinked.github.io/docs/dvl/dvl-protocol/)
 
