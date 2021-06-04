@@ -89,7 +89,7 @@ for more info on DVL ROS setup, go to [dvl-a50-ros](/dvl-a50-ros)
 
 ## Operation within QGC
 
-### For Position Hold
+### For Position Hold (UNDER CONSTRUCTION)
 
   1. go to http://192.168.2.2:2770/waterlinked
   2. the "Status" field in the Waterlinked page should read Running.... 
