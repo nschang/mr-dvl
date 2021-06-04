@@ -12,9 +12,9 @@
 
 ```bash
 
-    sudo nano /etc/netplan/50-cloud-init.yaml
-    sudo netplan generate
-    sudo netplan apply
+    $ sudo nano /etc/netplan/50-cloud-init.yaml
+    $ sudo netplan generate
+    $ sudo netplan apply
 
 ```
 
@@ -22,29 +22,27 @@
 
 ```bash
 
-    sudo dpkg-reconfigure -plow unattended-upgrades
-    sudo dpkg --configure -a
-    sudo apt update && sudo apt -f install && sudo apt full-upgrade
-    sudo dpkg-reconfigure -plow unattended-upgrades
+    $ sudo dpkg-reconfigure -plow unattended-upgrades
+    $ sudo dpkg --configure -a
+    $ sudo apt update && sudo apt -f install && sudo apt full-upgrade
+    $ sudo dpkg-reconfigure -plow unattended-upgrades
 
 ```
 
 14:30 DVL
 
 ```bash
-    pip install crcmod pyserial
-    git clone https://github.com/waterlinked/dvl-python.git
-    cd /home/ubuntu/dvl-python %%%folder with the setup.py file%%%
-    pip install -e .
-    python
-```
-
+    $ pip install crcmod pyserial
+    $ git clone https://github.com/waterlinked/dvl-python.git
+    $ cd /home/ubuntu/dvl-python %%%folder with the setup.py file%%%
+    $ pip install -e .
+    $ python
 ```python
         >>>  from wldvl import WlDVL
         >>>  dvl = WlDVL("/dev/ttyUSB0")
         >>>  dvl.read()
 ```
-
+```
 15:00 begin installing ROS noetic-desktop.
 
 ```bash
