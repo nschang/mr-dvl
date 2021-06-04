@@ -111,4 +111,4 @@ The DVL data is sent by the VISION_POSITION_DELTA [mavlink message](https://mavl
 Contributor: 
 **Si-yuan Chang** and **Alex Tretyakov**.
 
-This repository is in part coursework of CA-RIS-801 Marine Robotics in Spring 2021, Supervisor: Prof. Francesco Maurelli, Jacobs University Bremen. 
+This repository is in part coursework of CA-RIS-801 Marine Robotics, supervised by **Prof. Francesco Maurelli**, Jacobs University Bremen, Spring 2021.
