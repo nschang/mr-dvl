@@ -119,7 +119,7 @@ The DVL data is sent by the VISION_POSITION_DELTA [mavlink message](https://mavl
 2. place the pin in the starting position
 3. click `Set New Origin`.
 
-## Nice guides to follow
+### BlueROV2 QGC Setup Documentation
 [BlueROV2 Software Setup](https://bluerobotics.com/learn/bluerov2-software-setup/#update-software)
 
 ***
