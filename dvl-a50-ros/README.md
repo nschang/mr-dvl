@@ -80,3 +80,8 @@ The DVL ROS node publishes data to the topics: "*dvl/json_data*" and "*dvl/data*
 
 *The graph illustrates the topics and nodes created when the package is run.*
 
+## Good learning resources
+
+[Understanding ROS Nodes](https://wiki.ros.org/ROS/Tutorials/UnderstandingNodes)
+[ROS Nodes_ROS Wiki](https://wiki.ros.org/Nodes)
+
