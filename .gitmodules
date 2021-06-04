@@ -13,3 +13,9 @@
 [submodule "dvl-a50-data/dvl-serial-python"]
 	path = dvl-a50-data/dvl-serial-python
 	url = https://github.com/nschang/dvl-python.git
+[submodule "bluerov-repo/bluerov-ros-pkg-local"]
+	path = bluerov-repo/bluerov-ros-pkg-local
+	url = https://github.com/nschang/bluerov-ros-pkg.git
+[submodule "bluerov-repo/bluerov-ros-playground"]
+	path = bluerov-repo/bluerov-ros-playground
+	url = https://github.com/nschang/bluerov_ros_playground.git
