@@ -4,3 +4,6 @@
 [submodule "dvl-a50-future-work/PosHold/AP_VisualOdom"]
 	path = dvl-a50-future-work/PosHold/AP_VisualOdom
 	url = https://github.com/ArduPilot/ardupilot.git
+[submodule "dvl-a50-future-work/PosHold/ardupilot-dvl"]
+	path = dvl-a50-future-work/PosHold/ardupilot-dvl
+	url = https://github.com/nschang/ardupilot.git
