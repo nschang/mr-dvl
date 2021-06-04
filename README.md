@@ -1,29 +1,15 @@
 # WaterLinked DVL A50 wiki
 
-Integration instruction and operation guides of WaterLinked DVL A50 with BlueROV2, by Siyuan Chang and Alex Tretyakov.
+## Content: 
+The file 'dvl-history.md' is the main working doc.
 
-This is the repository of the DVL group for the course CA-RIS-801 Marine Robotics in Spring 2021 by Prof. Francesco Maurelli of Jacobs University Bremen. The file 'dvl-history.md' is the main working doc.
-
-This is a layout of the document.
-
-- Hardware integration: 
-- Quick Start
-- Data
+- dvl-a50-data: 
+- dvl-a50-ros: ROS-related setup for dvl-a50
 - Communication Protocol
 
-## introduction
+for Hardware integration, as well as other introductory content, please refer to [Wiki](/wiki) of this repo.
 
-DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic beams to measure distance to bottom surface and the velocity which the unit is moving across the surface. The DVL estimates velocity relative to the sea bottom by sending acoustic waves from the four angled transducers and then measure the frequency shift (doppler effect) from the received echo. By combining the measurements of all four transducers and the time between each acoustic pulse, it is able to accurately estimate the speed and direction of the movement of vehicle.
-
-## Status Check
-
-  ### LED Signal
-
-  * No green light: Power is off.
-
-  * Flashing green light (slow): DVL loocking for bottom lock.
-
-  * Fixed green light: DVL has bottom lock. The LED is mostly on and blinks quickly to show we are alive.
+## Waterlinked DVL A50 - Quick Start
 
 # DVL A50 Quick Start
 
@@ -76,3 +62,24 @@ cd ~/dvl-python
   1. go to http://192.168.2.2:2770/waterlinked 
   2. place the pin in the starting position
   3. click "Set New Origin".
+
+
+## introduction
+
+DVL - Doppler Velocity Logger - is a Hydro-acoustic unit which uses acoustic beams to measure distance to bottom surface and the velocity which the unit is moving across the surface. The DVL estimates velocity relative to the sea bottom by sending acoustic waves from the four angled transducers and then measure the frequency shift (doppler effect) from the received echo. By combining the measurements of all four transducers and the time between each acoustic pulse, it is able to accurately estimate the speed and direction of the movement of vehicle.
+
+## Status Check
+
+  ### LED Signal
+
+  * No green light: Power is off.
+
+  * Flashing green light (slow): DVL loocking for bottom lock.
+
+  * Fixed green light: DVL has bottom lock. The LED is mostly on and blinks quickly to show we are alive.
+
+
+Contributor: 
+**Si-yuan Chang** and **Alex Tretyakov**.
+
+This repository is in part coursework of CA-RIS-801 Marine Robotics in Spring 2021, Supervisor: Prof. Francesco Maurelli, Jacobs University Bremen. 
