@@ -96,7 +96,7 @@ for more info on DVL ROS setup, go to [dvl-a50-ros](/dvl-a50-ros)
   3. QGC will announce "EKF3 IMU0 STARTED RELATIVE AIDING" and then "EKF3 IMU0 FUSING ODOMETRY" (This means the DVL input is being fused.)
   4. switch to POSHOLD mode
 
-### For Deadreckoning (track ROV position in QGC map view): 
+### For Deadreckoning (track ROV position in QGC map view): (UNDER CONSTRUCTION)
 The DVL data is sent by the VISION_POSITION_DELTA [mavlink message](https://mavlink.io/en/messages/ardupilotmega.html#VISION_POSITION_DELTA).
 
 1. go to http://192.168.2.2:2770/waterlinked
