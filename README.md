@@ -106,6 +106,7 @@ The DVL data is sent by the VISION_POSITION_DELTA [mavlink message](https://mavl
 ## Nice guides to follow
 [BlueROV2 Software Setup](https://bluerobotics.com/learn/bluerov2-software-setup/#update-software)
 
+***
 
 Contributor: 
 **Si-yuan Chang** and **Alex Tretyakov**.
