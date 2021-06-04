@@ -19,3 +19,6 @@
 [submodule "bluerov-repo/bluerov-ros-playground"]
 	path = bluerov-repo/bluerov-ros-playground
 	url = https://github.com/nschang/bluerov_ros_playground.git
+[submodule "dvl-a50-future-work/dvl-sim/BlueSim"]
+	path = dvl-a50-future-work/dvl-sim/BlueSim
+	url = https://github.com/nschang/bluesim.git
