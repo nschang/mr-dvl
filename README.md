@@ -1,6 +1,6 @@
 # WaterLinked DVL A50 Integration Manual
 
-This repository contains information about the integration and setup of a WaterLinked DVL A50 on a BlueROV2. 
+This repository contains information about the integration, setup and operation of a WaterLinked DVL A50 on a BlueROV2. 
 
 ## Content: 
 The file 'dvl-history.md' is the main working doc. The other folders in this repo are: 
