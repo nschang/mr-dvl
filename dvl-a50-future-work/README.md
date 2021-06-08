@@ -4,7 +4,7 @@ This folder contains the work currently under development or planned for future 
 
 ## Hardware-Side
 
-- ADD Nvidia Jetson Nano to replace RPi as onboard companion SBC. (for vastly greater computing performance and, running as low as 5 watts, equip the ROV with the power of modern AI, including accelerated libraries for deep learning, computer vision, graphics, multimedia, and more. This enables quite a number of interesting applications, such as automatic object identification / obstacle avoidance / real-time 3D mapping / potential for autonomous operations.)
+- ADD Nvidia Jetson Nano to replace RPi as onboard companion SBC. (for vastly greater computing performance and, running as low as 5 watts, equip the ROV with the power of modern AI, including accelerated libraries for deep learning, computer vision, graphics, multimedia, and more. This enables quite a number of interesting applications, such as automatic object identification / obstacle avoidance / real-time 3D mapping / potential for autonomous operations.) See discussion [here](https://discuss.bluerobotics.com/t/proposed-advanced-sub-surface-rov-control-platform/4747).
   
   **Specs comparison of an Jetson Nano with Rpi 3A+ & 3B+**
 
