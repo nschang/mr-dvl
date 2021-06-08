@@ -17,7 +17,8 @@ This folder contains the work currently under development or planned for future 
 - ADD quick-switch to battery housing to simplify operations with battery. Example here: 
 
 **High Pressure Waterproof Switch for ROVs by BlueRobotics**
-  <img src="https://bluerobotics.com/wp-content/uploads/2016/10/switch-4.png" width="50%" height="50%">
+  
+  <img src="https://bluerobotics.com/wp-content/uploads/2016/10/switch-4.png" width="30%" height="30%">
 
 ## Software-Side:
 
