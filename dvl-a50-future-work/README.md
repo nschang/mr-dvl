@@ -8,7 +8,7 @@ This folder contains the work currently under development or planned for future 
   
   **Specs comparison of an Jetson Nano with Rpi 3A+ & 3B+**
 
-   <img src="https://miro.medium.com/max/3200/0*wG4G3yRftvRAUxu_.png" width="70%">
+  <img src="https://miro.medium.com/max/3200/0*wG4G3yRftvRAUxu_.png" width="70%">
   <img src="https://www.maketecheasier.com/assets/uploads/2019/06/jetson-vs-pi-table-3.png" width="70%">
   
   **An example implementation of Nvidia Jetson Nano on the Deepsouth ROV II**
@@ -16,7 +16,7 @@ This folder contains the work currently under development or planned for future 
 
 - ADD quick-switch to battery housing to simplify operations with battery. Example here: 
 
-**High Pressure Waterproof Switch for ROVs by BlueRobotics**
+  [High Pressure Waterproof Switch for ROVs by BlueRobotics](https://bluerobotics.com/store/comm-control-power/switch/switch-10-5a-r1/)
   
   <img src="https://bluerobotics.com/wp-content/uploads/2016/10/switch-4.png" width="30%" height="30%">
 
