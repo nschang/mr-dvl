@@ -9,7 +9,7 @@ This folder contains the work currently under development or planned for future 
   **Specs comparison of an Jetson Nano with Rpi 3A+ & 3B+**
 
    <img src="https://miro.medium.com/max/3200/0*wG4G3yRftvRAUxu_.png" width="70%">
-  ![Specs comparison of an Jetson Nano with Rpi 3A+ & 3B+](https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fwww.maketecheasier.com%2Fassets%2Fuploads%2F2019%2F06%2Fjetson-vs-pi-table-3.png&sp=1623156678T028a4d068ce8d7a774eb8fd68f53bc2bb6ce5666814befe90ee8b037dda73767)
+  <img src="https://www.maketecheasier.com/assets/uploads/2019/06/jetson-vs-pi-table-3.png" width="70%">
   
   **An example implementation of Nvidia Jetson Nano on the Deepsouth ROV II**
   <img src="https://aws1.discourse-cdn.com/business5/uploads/bluerobotics/optimized/2X/f/f3cc098c1ef960713b3400af177386711821814e_2_690x388.png">
