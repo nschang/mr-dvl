@@ -18,7 +18,7 @@ for Hardware integration, as well as other introductory content, go to [Wiki](ht
 Follow the steps below to start using DVL with BlueROV: 
 ### Hardware integration
 ### Connection
-  - DVL 8-pin connection
+  - DVL 8-pin connector
   - Connect landside terminal to BlueROV through Fathom-X Tether Interface (FXTI)
   - Make Sure BlueROV is set up correctly and running
 ### A50 DVL configuration
@@ -39,10 +39,10 @@ DVL data can be read in the following ways. For more detils on reading DVL data,
 
 ### json format:
 
-read data in terminal:
+to read data in terminal:
   `nc 192.168.2.95 16171`
 
-read data and save to text file:
+to read data and save to text file:
   `nc 192.168.2.95 16171 > out.txt`
   
 The output of a single TCP report will look like this: 
@@ -122,9 +122,3 @@ The DVL data is sent by the VISION_POSITION_DELTA [mavlink message](https://mavl
 ### BlueROV2 QGC Setup Documentation
 [BlueROV2 Software Setup](https://bluerobotics.com/learn/bluerov2-software-setup/#update-software)
 
-***
-
-Contributor: 
-**Si-yuan Chang** and **Alex Tretyakov**.
-
-This repository is in part coursework of CA-RIS-801 Marine Robotics, supervised by **Prof. Francesco Maurelli**, Jacobs University Bremen, Spring 2021.
